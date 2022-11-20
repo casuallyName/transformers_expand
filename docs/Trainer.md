@@ -1,5 +1,5 @@
 # `transformers_expand.Trainer`
-**继承自`trasnformers.Trainer`**
+**继承自**[`trasnformers.Trainer`](https://huggingface.co/docs/transformers/v4.24.0/en/main_classes/trainer#trainer)
 ## Parameters
 
 `(model: Union[PreTrainedModel, nn.Module] = None,
