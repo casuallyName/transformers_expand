@@ -2,6 +2,8 @@
 
 ## [Trainer](https://github.com/casuallyName/transformers_expand/blob/master/docs/Trainer.md)
 
+## [TrainingArguments](https://github.com/casuallyName/transformers_expand/blob/master/docs/TrainingArguments.md)
+
 ## [模型相关 Model docs](https://github.com/casuallyName/transformers_expand/blob/master/docs/Models.md)
 
 ## [损失函数相关 Loss docs](https://github.com/casuallyName/transformers_expand/blob/master/docs/Loss.md)
