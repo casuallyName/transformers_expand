@@ -15,7 +15,7 @@ _CITATION = """\
 """
 
 _DESCRIPTION = """\
-THUCNews 数据集采样
+THUCNews
 """
 
 _URLS = {
@@ -24,17 +24,17 @@ _URLS = {
     "test": "test.csv",
 }
 _LABELS = [
-    'finance',
-    'realty',
-    'stocks',
-    'education',
-    'science',
-    'society',
-    'politics',
-    'sports',
-    'game',
-    'entertainment',
-]
+        "金融",
+        "地产",
+        "股票",
+        "教育",
+        "科学",
+        "社会",
+        "政治",
+        "体育",
+        "游戏",
+        "娱乐",
+    ]
 
 
 class THUCNews_SentimentDatasetConfig(datasets.BuilderConfig):
