@@ -15,8 +15,8 @@ def load_adversarial(name,trainer):
     adversarial_module = importlib.import_module("transformers_expand.nn.adversarial")
     if name is None or name == 'none':
         return None
-    if hasattr(adversarial_module, name.upper()):
-        return getattr(adversarial_module, name.upper())(trainer)
+    if hasattr(adversarial_module, name):
+        return getattr(adversarial_module, name)(trainer)
     else:
         raise ImportError(f"cannot import name '{name}' from 'transformers_expand.nn.adversarial' ")
 

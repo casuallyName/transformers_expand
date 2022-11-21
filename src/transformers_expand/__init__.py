@@ -37,12 +37,17 @@ _import_structure = {
            "MultiLabelCategoricalForNerCrossEntropyLoss",
            "SpanLoss",
            "load_adversarial",
+           "FGSM",
            "FGM",
            "PGD",
+           "FreeAT",
            ],
     "nn.adversarial": ["load_adversarial",
+                       "FGSM",
                        "FGM",
-                       "PGD", ],
+                       "PGD",
+                       "FreeAT",
+                       ],
     "nn.functional": ["multi_label_categorical_cross_entropy"
                       ],
     "nn.layer": ["GlobalPointer",
@@ -139,8 +144,10 @@ if TYPE_CHECKING:
             MultiLabelCategoricalCrossEntropyLoss,
             SpanLoss,
             load_adversarial,
+            FGSM,
             FGM,
             PGD,
+            FreeAT,
         )
 
         from .nn import functional

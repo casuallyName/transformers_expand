@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 
 setup(
   name="transformers_expand",
-  version="0.0.1.dev1",
+  version="0.0.1.dev2",
   long_description=open("README.md", "r", encoding="utf-8").read(),
   long_description_content_type="text/markdown",
   license="Apache",

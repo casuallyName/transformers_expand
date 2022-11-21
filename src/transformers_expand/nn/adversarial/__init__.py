@@ -6,10 +6,10 @@
 # @Software : Python 3.7
 # @About    :
 from .modules import (
+    FGSM,
     FGM,
     PGD,
+    FreeAT,
 )
 
 from .adversarial_utils import load_adversarial
-
-

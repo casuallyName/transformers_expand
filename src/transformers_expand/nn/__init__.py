@@ -17,5 +17,7 @@ from .modules import (
 from .adversarial import (
     load_adversarial,
     FGM,
-    PGD
+    FGSM,
+    PGD,
+    FreeAT,
 )
