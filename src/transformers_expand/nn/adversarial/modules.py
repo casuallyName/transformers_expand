@@ -132,6 +132,7 @@ class PGD(_Adversarial):
                 norm = torch.norm(param.grad)
                 if norm != 0 and not torch.isnan(norm):
                     r_at = self.alpha * param.grad / norm
+                    print(r_at.shape, param.data.shape)
                     param.data.add_(r_at)
                     param.data = self._project(name, param.data, self.epsilon)
 
@@ -169,9 +170,6 @@ class PGD(_Adversarial):
 
 
 class FreeAT(_Adversarial):
-
-    # TODO 目前还有问题
-
     def __init__(self, trainer):
         super(FreeAT, self).__init__(trainer=trainer)
         self.epsilon = self._get_args('FreeAT_epsilon', 1.)
@@ -179,21 +177,19 @@ class FreeAT(_Adversarial):
         self.steps = self._get_args('FreeAT_steps', 3)
         self.emb_backup = {}
         self.grad_backup = {}
-        self.last_r_at = 0
+        self.last_r_at = {}
 
     def __str__(self):
         return f"{self.__class__.__name__}(epsilon={self.epsilon}, steps={self.steps})"
-
-
 
     def attack(self, is_first_attack=False):
         for name, param in self.trainer.model.named_parameters():
             if param.requires_grad and self.emb_name in name:
                 if is_first_attack:
                     self.emb_backup[name] = param.data.clone()
-                param.data.add_(self.last_r_at)
+                param.data.add_(self.last_r_at.get(name, 0))
                 param.data = self.project(name, param.data)
-                self.last_r_at = self.last_r_at + self.epsilon * param.grad.sign()
+                self.last_r_at[name] = self.last_r_at.get(name, 0) + self.epsilon * param.grad.sign()
 
     def restore(self):
         for name, param in self.trainer.model.named_parameters():
@@ -214,6 +210,7 @@ class FreeAT(_Adversarial):
                 self.grad_backup[name] = param.grad.clone()
 
     def restore_grad(self):
+
         for name, param in self.trainer.model.named_parameters():
             if param.requires_grad and param.grad is not None:
                 param.grad = self.grad_backup[name]
