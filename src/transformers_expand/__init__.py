@@ -73,6 +73,12 @@ except OptionalDependencyNotAvailable:
     #
     _import_structure["utils.dummy_pt_objects"] = [name for name in dir(dummy_pt_objects) if not name.startswith("_")]
 else:
+    _import_structure["models.albert"].extend(
+        [
+            "AlbertForTokenClassificationWithBiaffine",
+            "AlbertForTokenClassificationWithGlobalPointer",
+        ]
+    )
     _import_structure["models.auto"].extend(
         [
             "AutoModelForTokenClassificationWithGlobalPointer",
