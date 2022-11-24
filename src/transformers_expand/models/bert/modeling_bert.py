@@ -1,17 +1,6 @@
 import torch.utils.checkpoint
 from torch import nn
-from transformers.models.bert.modeling_bert import (
-    _TOKENIZER_FOR_DOC,
-    _CONFIG_FOR_DOC,
-    BERT_START_DOCSTRING,
-    BERT_INPUTS_DOCSTRING,
-    BertModel,
-    BertPreTrainedModel,
-    TokenClassifierOutput,
-    add_code_sample_docstrings,
-    add_start_docstrings_to_model_forward,
-    add_start_docstrings,
-)
+
 from typing import List, Optional, Tuple, Union, Any
 
 from ...nn import (
@@ -24,14 +13,20 @@ from ...nn import (
 
 from transformers.utils import logging
 
-logger = logging.get_logger(__name__)
-
-# TokenClassification docstring
-_CHECKPOINT_FOR_TOKEN_CLASSIFICATION = "bert-base-chinese"
-_TOKEN_CLASS_EXPECTED_OUTPUT = (
-    "{'entity':'小明', 'type':'PER', 'start':3, 'end':4}"
+from transformers.models.bert.modeling_bert import (
+    _TOKENIZER_FOR_DOC,
+    _CONFIG_FOR_DOC,
+    BERT_START_DOCSTRING,
+    BERT_INPUTS_DOCSTRING,
+    BertModel,
+    BertPreTrainedModel,
+    TokenClassifierOutput,
+    add_code_sample_docstrings,
+    add_start_docstrings_to_model_forward,
+    add_start_docstrings,
 )
-_TOKEN_CLASS_EXPECTED_LOSS = 0.01
+
+logger = logging.get_logger(__name__)
 
 
 @add_start_docstrings(
@@ -102,11 +97,11 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
     @add_start_docstrings_to_model_forward(BERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
+        checkpoint="bert-base-chinese",
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
-        expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        expected_loss=0.01,
     )
     def forward(
             self,
@@ -218,11 +213,11 @@ class BertForTokenClassificationWithGlobalPointer(BertPreTrainedModel):
     @add_start_docstrings_to_model_forward(BERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
+        checkpoint="bert-base-chinese",
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
-        expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        expected_loss=0.01,
     )
     def forward(
             self,

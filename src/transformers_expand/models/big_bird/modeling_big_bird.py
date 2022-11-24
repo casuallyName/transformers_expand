@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-# @Time     : 2022/11/24 21:13
-# @File     : modeling_albert.py
+# @Time     : 2022/11/24 21:58
+# @File     : modeling_big_bird.py
 # @Author   : Zhou Hang
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 import torch
+import torch.utils.checkpoint
 from torch import nn
 
 from transformers.modeling_outputs import (
-    # BaseModelOutput,
-    # BaseModelOutputWithPooling,
     # MaskedLMOutput,
     # MultipleChoiceModelOutput,
-    # QuestionAnsweringModelOutput,
     # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
@@ -28,17 +26,14 @@ from transformers.utils import (
     logging,
     # replace_return_docstrings,
 )
-
-from transformers.models.albert.modeling_albert import (
+from transformers.models.big_bird.modeling_big_bird import (
+    BigBirdModel,
+    BigBirdPreTrainedModel,
     _CONFIG_FOR_DOC,
     _TOKENIZER_FOR_DOC,
-    ALBERT_START_DOCSTRING,
-    ALBERT_INPUTS_DOCSTRING,
-    AlbertPreTrainedModel,
-    AlbertConfig,
-    AlbertModel,
+    BIG_BIRD_START_DOCSTRING,
+    BIG_BIRD_INPUTS_DOCSTRING,
 )
-
 from ...nn import (
     GlobalPointer,
     EfficientGlobalPointer,
@@ -52,16 +47,15 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Albert Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    BigBird Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
-    ALBERT_START_DOCSTRING,
+    BIG_BIRD_START_DOCSTRING,
 )
-class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
-    _keys_to_ignore_on_load_unexpected = [r"pooler"]
-
-    def __init__(self, config: AlbertConfig, biaffine_input_size: int = None, use_lstm: bool = None):
+class BigBirdForTokenClassificationWithBiaffine(BigBirdPreTrainedModel):
+    def __init__(self, config, biaffine_input_size: int = None, use_lstm: bool = None):
         super().__init__(config)
+        # 此处 +1 操作是由于实体标签类别中含有一个 "非实体" 类别，即label map中的 0
         self.num_labels = config.num_labels + 1
 
         if use_lstm is not None and hasattr(config, 'use_lstm') and config.use_lstm != use_lstm:
@@ -82,7 +76,8 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
         self.use_lstm = config.use_lstm
         self.biaffine_input_size = config.biaffine_input_size
 
-        self.albert = AlbertModel(config, add_pooling_layer=False)
+        self.bert = BigBirdModel(config)
+
         if self.use_lstm:
             self.lstm = torch.nn.LSTM(input_size=768,
                                       hidden_size=768,
@@ -97,12 +92,10 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            classifier_dropout_prob = (
-                config.classifier_dropout_prob
-                if config.classifier_dropout_prob is not None
-                else config.hidden_dropout_prob
+            classifier_dropout = (
+                config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
             )
-            self.dropout = nn.Dropout(classifier_dropout_prob)
+            self.dropout = nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -115,18 +108,18 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(ALBERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(BIG_BIRD_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint="vumichien/tiny-albert",
+        checkpoint="vumichien/token-classification-bigbird-roberta-base-random",
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
         expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
-        expected_loss=0.66,
+        expected_loss=0.54,
     )
     def forward(
             self,
-            input_ids: Optional[torch.LongTensor] = None,
+            input_ids: torch.LongTensor = None,
             attention_mask: Optional[torch.FloatTensor] = None,
             token_type_ids: Optional[torch.LongTensor] = None,
             position_ids: Optional[torch.LongTensor] = None,
@@ -137,14 +130,14 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
             output_attentions: Optional[bool] = None,
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
-    ) -> Union[TokenClassifierOutput, Tuple]:
+    ) -> Union[TokenClassifierOutput, Tuple[torch.FloatTensor]]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        outputs = self.albert(
+        outputs = self.bert(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
@@ -188,25 +181,21 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    Albert Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    BigBird Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
-    ALBERT_START_DOCSTRING,
+    BIG_BIRD_START_DOCSTRING,
 )
-class AlbertForTokenClassificationWithGlobalPointer(AlbertPreTrainedModel):
-    _keys_to_ignore_on_load_unexpected = [r"pooler"]
-
-    def __init__(self, config: AlbertConfig, inner_dim: int = None, use_efficient: bool = None):
+class BigBirdForTokenClassificationWithGlobalPointer(BigBirdPreTrainedModel):
+    def __init__(self, config, inner_dim: int = None, use_efficient: bool = None):
         super().__init__(config)
         self.num_labels = config.num_labels
 
-        self.albert = AlbertModel(config, add_pooling_layer=False)
-        classifier_dropout_prob = (
-            config.classifier_dropout_prob
-            if config.classifier_dropout_prob is not None
-            else config.hidden_dropout_prob
+        self.bert = BigBirdModel(config)
+        classifier_dropout = (
+            config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
         )
-        self.dropout = nn.Dropout(classifier_dropout_prob)
+        self.dropout = nn.Dropout(classifier_dropout)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -238,36 +227,35 @@ class AlbertForTokenClassificationWithGlobalPointer(AlbertPreTrainedModel):
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(ALBERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(BIG_BIRD_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint="vumichien/tiny-albert",
+        checkpoint="vumichien/token-classification-bigbird-roberta-base-random",
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
         expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
-        expected_loss=0.66,
+        expected_loss=0.54,
     )
     def forward(
             self,
-            input_ids: Optional[torch.LongTensor] = None,
+            input_ids: torch.LongTensor = None,
             attention_mask: Optional[torch.FloatTensor] = None,
             token_type_ids: Optional[torch.LongTensor] = None,
             position_ids: Optional[torch.LongTensor] = None,
             head_mask: Optional[torch.FloatTensor] = None,
             inputs_embeds: Optional[torch.FloatTensor] = None,
             labels: Optional[torch.LongTensor] = None,
-            sequence_mask: Optional[torch.Tensor] = None,
             output_attentions: Optional[bool] = None,
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
-    ) -> Union[TokenClassifierOutput, Tuple]:
+    ) -> Union[TokenClassifierOutput, Tuple[torch.FloatTensor]]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        outputs = self.albert(
+        outputs = self.bert(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,

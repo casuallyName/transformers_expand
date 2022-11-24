@@ -25,6 +25,7 @@ _import_structure = {
     "models.albert": [],
     "models.auto": [],
     "models.bert": [],
+    "models.big_bird":[],
     "models.electra": [],
     "models.ernie": [],
     "nn": ["functional",
@@ -88,19 +89,25 @@ else:
     _import_structure["models.bert"].extend(
         [
             "BertForTokenClassificationWithGlobalPointer",
-            "BertForTokenClassificationWithBiaffine"
+            "BertForTokenClassificationWithBiaffine",
+        ]
+    )
+    _import_structure["models.big_bird"].extend(
+        [
+            "BigBirdForTokenClassificationWithBiaffine",
+            "BigBirdForTokenClassificationWithGlobalPointer",
         ]
     )
     _import_structure["models.electra"].extend(
         [
             "ElectraForTokenClassificationWithGlobalPointer",
-            "ElectraForTokenClassificationWithBiaffine"
+            "ElectraForTokenClassificationWithBiaffine",
         ]
     )
     _import_structure["models.ernie"].extend(
         [
             "ErnieForTokenClassificationWithGlobalPointer",
-            "ErnieForTokenClassificationWithBiaffine"
+            "ErnieForTokenClassificationWithBiaffine",
         ]
     )
 
@@ -138,6 +145,10 @@ if TYPE_CHECKING:
         from .models.bert import (
             BertForTokenClassificationWithGlobalPointer,
             BertForTokenClassificationWithBiaffine,
+        )
+        from .models.big_bird import (
+            BigBirdForTokenClassificationWithBiaffine,
+            BigBirdForTokenClassificationWithGlobalPointer,
         )
         from .models.electra import (
             ElectraForTokenClassificationWithGlobalPointer,
