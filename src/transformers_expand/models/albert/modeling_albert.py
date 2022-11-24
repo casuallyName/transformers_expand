@@ -118,10 +118,12 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            classifier_dropout = (
-                config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
+            classifier_dropout_prob = (
+                config.classifier_dropout_prob
+                if config.classifier_dropout_prob is not None
+                else config.hidden_dropout_prob
             )
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = nn.Dropout(classifier_dropout_prob)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -223,10 +225,12 @@ class AlbertForTokenClassificationWithGlobalPointer(AlbertPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.albert = AlbertModel(config, add_pooling_layer=False)
-        classifier_dropout = (
-            config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
+        classifier_dropout_prob = (
+            config.classifier_dropout_prob
+            if config.classifier_dropout_prob is not None
+            else config.hidden_dropout_prob
         )
-        self.dropout = nn.Dropout(classifier_dropout)
+        self.dropout = nn.Dropout(classifier_dropout_prob)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
