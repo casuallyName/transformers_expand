@@ -8,7 +8,7 @@ from transformers.models.auto.configuration_auto import CONFIG_MAPPING_NAMES
 MODEL_FOR_TOKEN_CLASSIFICATION_WITH_BIAFFINE_MAPPING_NAMES = OrderedDict(
     [
         # # Model for Token Classification mapping
-        # ("albert", "AlbertForTokenClassification"),
+        ("albert", "AlbertForTokenClassificationWithBiaffine"),
         ("bert", "BertForTokenClassificationWithBiaffine"),
         # ("big_bird", "BigBirdForTokenClassification"),
         # ("bloom", "BloomForTokenClassification"),
@@ -64,7 +64,7 @@ class AutoModelForTokenClassificationWithBiaffine(_BaseAutoModelClass):
 MODEL_FOR_TOKEN_CLASSIFICATION_WITH_GLOBAL_POINTER_MAPPING_NAMES = OrderedDict(
     [
         # # Model for Token Classification mapping
-        # ("albert", "AlbertForTokenClassification"),
+        ("albert", "AlbertForTokenClassificationWithBiaffine"),
         ("bert", "BertForTokenClassificationWithGlobalPointer"),
         # ("big_bird", "BigBirdForTokenClassification"),
         # ("bloom", "BloomForTokenClassification"),
