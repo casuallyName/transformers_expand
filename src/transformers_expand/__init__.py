@@ -22,6 +22,7 @@ _import_structure = {
                 "MetricsForGlobalPointerTask", ],
     "models": [],
     # Models
+    "models.albert": [],
     "models.auto": [],
     "models.bert": [],
     "models.electra": [],
@@ -118,7 +119,10 @@ if TYPE_CHECKING:
     else:
 
         # PyTorch model imports
-
+        from .models.albert import (
+            AlbertForTokenClassificationWithBiaffine,
+            AlbertForTokenClassificationWithGlobalPointer,
+        )
         from .models.auto import (
             MODEL_FOR_TOKEN_CLASSIFICATION_WITH_GLOBAL_POINTER_MAPPING,
             AutoModelForTokenClassificationWithGlobalPointer,
