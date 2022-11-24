@@ -10,7 +10,7 @@ MODEL_FOR_TOKEN_CLASSIFICATION_WITH_BIAFFINE_MAPPING_NAMES = OrderedDict(
         # # Model for Token Classification mapping
         ("albert", "AlbertForTokenClassificationWithBiaffine"),
         ("bert", "BertForTokenClassificationWithBiaffine"),
-        # ("big_bird", "BigBirdForTokenClassification"),
+        ("big_bird", "BigBirdForTokenClassificationWithBiaffine"),
         # ("bloom", "BloomForTokenClassification"),
         # ("camembert", "CamembertForTokenClassification"),
         # ("canine", "CanineForTokenClassification"),
@@ -66,7 +66,7 @@ MODEL_FOR_TOKEN_CLASSIFICATION_WITH_GLOBAL_POINTER_MAPPING_NAMES = OrderedDict(
         # # Model for Token Classification mapping
         ("albert", "AlbertForTokenClassificationWithBiaffine"),
         ("bert", "BertForTokenClassificationWithGlobalPointer"),
-        # ("big_bird", "BigBirdForTokenClassification"),
+        ("big_bird", "BigBirdForTokenClassificationWithGlobalPointer"),
         # ("bloom", "BloomForTokenClassification"),
         # ("camembert", "CamembertForTokenClassification"),
         # ("canine", "CanineForTokenClassification"),
