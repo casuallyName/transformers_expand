@@ -117,8 +117,9 @@ if __name__ == '__main__':
                 auto_name='AutoModelForTokenClassificationWithBiaffine',
                 forward_func=forward_func_for_biaffine)
 
+    print('-'*100)
     print('GlobalPointer Models:')
     check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                 end='WithGlobalPointer',
                 auto_name='AutoModelForTokenClassificationWithGlobalPointer',
-                forward_func=forward_func_for_biaffine)
+                forward_func=forward_func_for_global_pointer())
