@@ -54,7 +54,7 @@ logger = logging.get_logger(__name__)
     """,
     BLOOM_START_DOCSTRING,
 )
-class BloomForTokenClassification(BloomPreTrainedModel):
+class BloomForTokenClassificationWithBiaffine(BloomPreTrainedModel):
     _keys_to_ignore_on_load_missing = [r"h.*.self_attention.scale_mask_softmax.causal_mask", r"lm_head.weight"]
 
     def __init__(self, config: BloomConfig, biaffine_input_size: int = None, use_lstm: bool = None):
