@@ -100,7 +100,7 @@ else:
             "BigBirdForTokenClassificationWithGlobalPointer",
         ]
     )
-    _import_structure["models.modeling_bloom"].extend(
+    _import_structure["models.bloom"].extend(
         [
             "BloomForTokenClassificationWithGlobalPointer",
             "BloomForTokenClassificationWithBiaffine"
@@ -161,6 +161,10 @@ if TYPE_CHECKING:
         from .models.big_bird import (
             BigBirdForTokenClassificationWithBiaffine,
             BigBirdForTokenClassificationWithGlobalPointer,
+        )
+        from .models.bloom import (
+            BloomForTokenClassificationWithBiaffine,
+            BloomForTokenClassificationWithGlobalPointer,
         )
         from .models.electra import (
             ElectraForTokenClassificationWithGlobalPointer,
