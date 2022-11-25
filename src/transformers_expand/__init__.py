@@ -27,6 +27,7 @@ _import_structure = {
     "models.bert": [],
     "models.big_bird": [],
     "models.bloom": [],
+    "models.distilbert":[],
     "models.electra": [],
     "models.ernie": [],
     "models.roberta": [],
@@ -100,12 +101,21 @@ else:
             "BigBirdForTokenClassificationWithGlobalPointer",
         ]
     )
+
     _import_structure["models.bloom"].extend(
         [
             "BloomForTokenClassificationWithBiaffine"
             "BloomForTokenClassificationWithGlobalPointer",
         ]
     )
+
+    _import_structure["models.distilbert"].extend(
+        [
+            "DistilBertForTokenClassificationWithBiaffine",
+            "DistilBertForTokenClassificationWithGlobalPointer",
+        ]
+    )
+
     _import_structure["models.electra"].extend(
         [
             "ElectraForTokenClassificationWithGlobalPointer",
@@ -162,6 +172,12 @@ if TYPE_CHECKING:
             BigBirdForTokenClassificationWithBiaffine,
             BigBirdForTokenClassificationWithGlobalPointer,
         )
+
+        from .models.distilbert import (
+            DistilBertForTokenClassificationWithBiaffine,
+            DistilBertForTokenClassificationWithGlobalPointer,
+        )
+
         from .models.bloom import (
             BloomForTokenClassificationWithBiaffine,
             BloomForTokenClassificationWithGlobalPointer,
@@ -178,6 +194,8 @@ if TYPE_CHECKING:
             RobertaForTokenClassificationWithBiaffine,
             RobertaForTokenClassificationWithGlobalPointer,
         )
+
+
 
         from .nn import (
             GlobalPointer,
