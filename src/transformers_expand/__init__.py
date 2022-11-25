@@ -61,7 +61,6 @@ _import_structure = {
                    "MultiLabelCategoricalForNerCrossEntropyLoss",
                    ],
     "trainer": ["Trainer"],
-    "trainer_utils": ["EvalPrediction", "IntervalStrategy", "SchedulerType", "enable_full_determinism", "set_seed"],
     "training_args": ["TrainingArguments"],
     "utils.dummy_pt_objects": []
 }
@@ -189,8 +188,6 @@ if TYPE_CHECKING:
         from .nn import adversarial
 
         from .trainer import Trainer
-
-        from .utils.trainer_utils import EvalPrediction, IntervalStrategy, SchedulerType, enable_full_determinism, set_seed
 
         from .training_args import TrainingArguments
 
