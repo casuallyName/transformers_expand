@@ -25,10 +25,11 @@ _import_structure = {
     "models.albert": [],
     "models.auto": [],
     "models.bert": [],
-    "models.big_bird":[],
+    "models.big_bird": [],
+    "models.bloom": [],
     "models.electra": [],
     "models.ernie": [],
-    "models.roberta":[],
+    "models.roberta": [],
     "nn": ["functional",
            "layer",
            "modules",
@@ -97,6 +98,12 @@ else:
         [
             "BigBirdForTokenClassificationWithBiaffine",
             "BigBirdForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.modeling_bloom"].extend(
+        [
+            "BloomForTokenClassificationWithGlobalPointer",
+            "BloomForTokenClassificationWithBiaffine"
         ]
     )
     _import_structure["models.electra"].extend(

@@ -3,6 +3,7 @@ from . import (
     auto,
     bert,
     big_bird,
+    bloom,
     electra,
     ernie,
     roberta,
