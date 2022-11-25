@@ -5,6 +5,11 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
+import os.path
+import sys
+
+sys.path.append(os.path.abspath('../src/transformers_expand'))
+
 
 import torch
 import traceback
@@ -106,14 +111,14 @@ def check_model(model_list, end, auto_name, forward_func):
 if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
-    print('Biaffine Models:')
-    check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
-                end='WithBiaffine',
-                auto_name='AutoModelForTokenClassificationWithBiaffine',
-                forward_func=forward_func_for_biaffine)
-
-    print('GlobalPointer Models:')
-    check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
-                end='WithGlobalPointer',
-                auto_name='AutoModelForTokenClassificationWithGlobalPointer',
-                forward_func=forward_func_for_biaffine)
+    # print('Biaffine Models:')
+    # check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
+    #             end='WithBiaffine',
+    #             auto_name='AutoModelForTokenClassificationWithBiaffine',
+    #             forward_func=forward_func_for_biaffine)
+    #
+    # print('GlobalPointer Models:')
+    # check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
+    #             end='WithGlobalPointer',
+    #             auto_name='AutoModelForTokenClassificationWithGlobalPointer',
+    #             forward_func=forward_func_for_biaffine)
