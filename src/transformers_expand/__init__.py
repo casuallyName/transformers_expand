@@ -1,4 +1,4 @@
-__version__ = "0.0.1"
+__version__ = "0.0.1.dev"
 
 from typing import TYPE_CHECKING
 
@@ -28,6 +28,7 @@ _import_structure = {
     "models.big_bird":[],
     "models.electra": [],
     "models.ernie": [],
+    "models.roberta":[],
     "nn": ["functional",
            "layer",
            "modules",
@@ -110,6 +111,10 @@ else:
             "ErnieForTokenClassificationWithBiaffine",
         ]
     )
+    _import_structure["models.roberta"] = [
+        "RobertaForTokenClassificationWithBiaffine",
+        "RobertaForTokenClassificationWithGlobalPointer",
+    ]
 
 # Direct imports for type-checking
 if TYPE_CHECKING:
@@ -158,6 +163,11 @@ if TYPE_CHECKING:
             ErnieForTokenClassificationWithBiaffine,
             ErnieForTokenClassificationWithGlobalPointer,
         )
+        from .models.roberta import (
+            RobertaForTokenClassificationWithBiaffine,
+            RobertaForTokenClassificationWithGlobalPointer,
+        )
+
         from .nn import (
             GlobalPointer,
             EfficientGlobalPointer,

@@ -4,5 +4,6 @@ from . import (
     bert,
     big_bird,
     electra,
-    ernie
+    ernie,
+    roberta,
 )
