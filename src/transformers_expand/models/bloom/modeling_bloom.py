@@ -205,7 +205,7 @@ class BloomForTokenClassificationWithBiaffine(BloomPreTrainedModel):
     """,
     BLOOM_START_DOCSTRING,
 )
-class BloomForTokenClassificationnWithGlobalPointer(BloomPreTrainedModel):
+class BloomForTokenClassificationWithGlobalPointer(BloomPreTrainedModel):
     _keys_to_ignore_on_load_missing = [r"h.*.self_attention.scale_mask_softmax.causal_mask", r"lm_head.weight"]
 
     def __init__(self, config: BloomConfig, inner_dim: int = None, use_efficient: bool = None):

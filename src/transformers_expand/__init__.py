@@ -102,8 +102,8 @@ else:
     )
     _import_structure["models.bloom"].extend(
         [
-            "BloomForTokenClassificationWithGlobalPointer",
             "BloomForTokenClassificationWithBiaffine"
+            "BloomForTokenClassificationWithGlobalPointer",
         ]
     )
     _import_structure["models.electra"].extend(
