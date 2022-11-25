@@ -8,7 +8,7 @@
 import os.path
 import sys
 
-sys.path.append(os.path.abspath('../src/transformers_expand'))
+sys.path.append(os.path.abspath('../src'))
 
 
 import torch
