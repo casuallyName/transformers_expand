@@ -122,4 +122,4 @@ if __name__ == '__main__':
     check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                 end='WithGlobalPointer',
                 auto_name='AutoModelForTokenClassificationWithGlobalPointer',
-                forward_func=forward_func_for_global_pointer())
+                forward_func=forward_func_for_global_pointer)
