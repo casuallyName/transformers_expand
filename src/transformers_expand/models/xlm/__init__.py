@@ -21,7 +21,7 @@ try:
 except OptionalDependencyNotAvailable:
     pass
 else:
-    _import_structure["modeling_xml"] = [
+    _import_structure["modeling_xlm"] = [
         "XLMForTokenClassificationWithGlobalPointer",
         "XLMForTokenClassificationWithBiaffine"
     ]
