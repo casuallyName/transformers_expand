@@ -43,6 +43,7 @@ _import_structure = {
     "models.xlm": [],
     "models.xlm_roberta": [],
     "models.xlm_roberta_xl": [],
+    "models.xlnet": [],
     "models.yoso": [],
 
     "nn": ["functional",
@@ -200,6 +201,10 @@ else:
         "XLMRobertaXLForTokenClassificationWithBiaffine",
         "XLMRobertaXLForTokenClassificationWithGlobalPointer",
     ]
+    _import_structure["models.xlnet"] = [
+        "XLNetForTokenClassificationWithBiaffine",
+        "XLNetForTokenClassificationWithGlobalPointer",
+    ]
     _import_structure["models.yoso"] = [
         "YosoForTokenClassificationWithBiaffine",
         "YosoForTokenClassificationWithGlobalPointer",
@@ -314,6 +319,10 @@ if TYPE_CHECKING:
         from .models.xlm_roberta_xl import (
             XLMRobertaXLForTokenClassificationWithBiaffine,
             XLMRobertaXLForTokenClassificationWithGlobalPointer,
+        )
+        from .models.xlnet import (
+            XLNetForTokenClassificationWithBiaffine,
+            XLNetForTokenClassificationWithGlobalPointer,
         )
         from .models.yoso import (
             YosoForTokenClassificationWithBiaffine,

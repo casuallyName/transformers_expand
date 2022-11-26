@@ -21,5 +21,6 @@ from . import (
     xlm,
     xlm_roberta,
     xlm_roberta_xl,
-    yoso
+    xlnet,
+    yoso,
 )
