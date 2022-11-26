@@ -51,8 +51,8 @@ from ...nn import (
 
 @add_start_docstrings(
     """
-    DistilBert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    DistilBert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     DISTILBERT_START_DOCSTRING,
 )
@@ -186,7 +186,7 @@ class DistilBertForTokenClassificationWithBiaffine(DistilBertPreTrainedModel):
             loss = loss_fct(span_logits=logits, span_label=labels, sequence_mask=sequence_mask)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -199,8 +199,8 @@ class DistilBertForTokenClassificationWithBiaffine(DistilBertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    DistilBert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    DistilBert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     DISTILBERT_START_DOCSTRING,
 )
@@ -309,7 +309,7 @@ class DistilBertForTokenClassificationWithGlobalPointer(DistilBertPreTrainedMode
             loss = loss_fct(logits, labels)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(

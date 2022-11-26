@@ -53,8 +53,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    CamemBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    CamemBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     CAMEMBERT_START_DOCSTRING,
 )
@@ -191,8 +191,8 @@ class CamembertForTokenClassificationWithBiaffine(CamembertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    CamemBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    CamemBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     CAMEMBERT_START_DOCSTRING,
 )

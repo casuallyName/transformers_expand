@@ -10,8 +10,6 @@ from torch import nn
 
 from typing import List, Optional, Tuple, Union, Any
 
-
-
 from transformers.utils import logging
 
 from transformers.models.bert.modeling_bert import (
@@ -35,14 +33,13 @@ from ...nn import (
     SpanLoss,
 )
 
-
 logger = logging.get_logger(__name__)
 
 
 @add_start_docstrings(
     """
-    Bert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for 
-    Named-Entity-Recognition (NER) tasks.
+    Bert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     BERT_START_DOCSTRING,
 )
@@ -172,8 +169,8 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    Bert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for 
-    Named-Entity-Recognition (NER) tasks.
+    Bert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     BERT_START_DOCSTRING,
 )

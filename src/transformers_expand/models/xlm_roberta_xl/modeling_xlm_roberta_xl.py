@@ -53,8 +53,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    XLM-Roberta-xlarge Model with a token classification head on top (a biaffine layer on top of the hidden-states output)
-     e.g. for Named-Entity-Recognition (NER) tasks.
+    XLM-Roberta-xlarge Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     XLM_ROBERTA_XL_START_DOCSTRING,
 )

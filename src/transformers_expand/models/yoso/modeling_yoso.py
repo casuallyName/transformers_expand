@@ -5,16 +5,10 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-import math
-import os
 from typing import Optional, Tuple, Union
-
 import torch
 import torch.utils.checkpoint
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
-
-from transformers.activations import ACT2FN
 from transformers.modeling_outputs import (
     BaseModelOutputWithCrossAttentions,
     MaskedLMOutput,
@@ -23,8 +17,6 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import apply_chunking_to_forward, find_pruneable_heads_and_indices, prune_linear_layer
 from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
     logging
 
@@ -51,7 +43,7 @@ logger = logging.get_logger(__name__)
 
 
 @add_start_docstrings(
-    """YOSO Model with a token classification head on top (a biaffine layer on top of the hidden-states output)
+    """YOSO Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
      e.g. for Named-Entity-Recognition (NER) tasks.""",
     YOSO_START_DOCSTRING,
 )
@@ -168,7 +160,7 @@ class YosoForTokenClassificationWithBiaffine(YosoPreTrainedModel):
             loss = loss_fct(span_logits=logits, span_label=labels, sequence_mask=sequence_mask)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -180,7 +172,7 @@ class YosoForTokenClassificationWithBiaffine(YosoPreTrainedModel):
 
 
 @add_start_docstrings(
-    """YOSO Model with a token classification head on top (a global pointer layer on top of the hidden-states output)
+    """YOSO Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
      e.g. for Named-Entity-Recognition (NER) tasks.""",
     YOSO_START_DOCSTRING,
 )
@@ -275,7 +267,7 @@ class YosoForTokenClassificationWithGlobalPointer(YosoPreTrainedModel):
             loss = loss_fct(logits, labels)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(

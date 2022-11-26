@@ -6,17 +6,11 @@
 # @Software : Python 3.7
 # @About    :
 
-import itertools
-import math
-from dataclasses import dataclass
 from typing import Dict, Optional, Tuple, Union
 
-import numpy as np
 import torch
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import gelu
 from transformers.modeling_outputs import (
     BaseModelOutput,
     MaskedLMOutput,
@@ -25,8 +19,6 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel, SequenceSummary, SQuADHead
-from transformers.pytorch_utils import apply_chunking_to_forward, find_pruneable_heads_and_indices, prune_linear_layer
 from transformers.utils import (
     ModelOutput,
     add_code_sample_docstrings,
@@ -40,7 +32,6 @@ from transformers.models.xlm.modeling_xlm import (
     XLM_INPUTS_DOCSTRING,
     _TOKENIZER_FOR_DOC,
     _CHECKPOINT_FOR_DOC,
-    TokenClassifierOutput,
     _CONFIG_FOR_DOC,
 
     XLMPreTrainedModel,
@@ -60,8 +51,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    XLM Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    XLM Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     XLM_START_DOCSTRING,
 )
@@ -184,7 +175,7 @@ class XLMForTokenClassificationWithBiaffine(XLMPreTrainedModel):
             loss = loss_fct(span_logits=logits, span_label=labels, sequence_mask=sequence_mask)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -197,8 +188,8 @@ class XLMForTokenClassificationWithBiaffine(XLMPreTrainedModel):
 
 @add_start_docstrings(
     """
-    XLM Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    XLM Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     XLM_START_DOCSTRING,
 )
@@ -299,7 +290,7 @@ class XLMForTokenClassificationWithGlobalPointer(XLMPreTrainedModel):
             loss = loss_fct(logits, labels)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(

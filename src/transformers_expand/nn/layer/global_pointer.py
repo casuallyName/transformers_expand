@@ -42,7 +42,6 @@ class GlobalPointer(Module):
     """
 
     def __init__(self, heads, head_size, hidden_size, RoPE=True):
-
         super(GlobalPointer, self).__init__()
         self.heads = heads
         self.head_size = head_size

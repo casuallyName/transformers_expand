@@ -52,8 +52,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Albert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Albert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ALBERT_START_DOCSTRING,
 )
@@ -188,8 +188,8 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    Albert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Albert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ALBERT_START_DOCSTRING,
 )

@@ -56,8 +56,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Data2VecText Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    Data2VecText Model with a token classification head on top (a biaffine layer on top of the hidden-states output)  
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     DATA2VECTEXT_START_DOCSTRING,
 )
@@ -192,8 +192,8 @@ class Data2VecTextForTokenClassificationWithBiaffine(Data2VecTextPreTrainedModel
 
 @add_start_docstrings(
     """
-    Data2VecText Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    Data2VecText Model with a token classification head on top (a global pointer layer on top of the hidden-states output)  
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     DATA2VECTEXT_START_DOCSTRING,
 )

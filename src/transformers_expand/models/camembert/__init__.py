@@ -35,8 +35,8 @@ if TYPE_CHECKING:
         pass
     else:
         from .modeling_camembert import (
-CamembertForTokenClassificationWithBiaffine,
-CamembertForTokenClassificationWithGlobalPointer
+            CamembertForTokenClassificationWithBiaffine,
+            CamembertForTokenClassificationWithGlobalPointer
         )
 else:
     import sys

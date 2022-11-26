@@ -48,8 +48,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    SqueezeBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    SqueezeBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     SQUEEZEBERT_START_DOCSTRING,
 )
@@ -179,8 +179,8 @@ class SqueezeBertForTokenClassificationWithBiaffine(SqueezeBertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    SqueezeBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    SqueezeBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     SQUEEZEBERT_START_DOCSTRING,
 )

@@ -25,8 +25,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    XLM-RoBERTa Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    XLM-RoBERTa Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     XLM_ROBERTA_START_DOCSTRING,
 )
@@ -41,8 +41,8 @@ class XLMRobertaForTokenClassificationWithBiaffine(RobertaForTokenClassification
 
 @add_start_docstrings(
     """
-    XLM-RoBERTa Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
-    for Named-Entity-Recognition (NER) tasks.
+    XLM-RoBERTa Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     XLM_ROBERTA_START_DOCSTRING,
 )

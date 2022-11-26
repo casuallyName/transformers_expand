@@ -12,7 +12,6 @@ import torch
 import torch.utils.checkpoint
 from torch import nn
 
-from transformers.activations import ACT2FN, gelu
 from transformers.modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
     BaseModelOutputWithPoolingAndCrossAttentions,
@@ -28,7 +27,6 @@ from transformers.utils import (
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
     logging,
-    replace_return_docstrings,
 )
 from transformers.models.roberta.modeling_roberta import (
     _CONFIG_FOR_DOC,
@@ -52,8 +50,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Roberta Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Roberta Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ROBERTA_START_DOCSTRING,
 )
@@ -189,8 +187,8 @@ class RobertaForTokenClassificationWithBiaffine(RobertaPreTrainedModel):
 
 @add_start_docstrings(
     """
-    Roberta Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Roberta Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ROBERTA_START_DOCSTRING,
 )

@@ -14,7 +14,6 @@ from . import (
     electra,
     ernie,
 
-
     roberta,
     roformer,
     squeezebert,

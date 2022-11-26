@@ -13,12 +13,6 @@ import torch.utils.checkpoint
 from torch import nn
 
 from transformers.modeling_outputs import TokenClassifierOutput
-# from transformers.utils import (
-#     add_start_docstrings,
-#     add_start_docstrings_to_model_forward,
-#     logging,
-#     replace_return_docstrings,
-# )
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
@@ -49,8 +43,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Ernie Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Ernie Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ERNIE_START_DOCSTRING,
 )
@@ -182,8 +176,8 @@ class ErnieForTokenClassificationWithBiaffine(ErniePreTrainedModel):
 
 @add_start_docstrings(
     """
-    Ernie Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Ernie Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ERNIE_START_DOCSTRING,
 )

@@ -47,8 +47,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    BigBird Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    BigBird Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     BIG_BIRD_START_DOCSTRING,
 )
@@ -181,8 +181,8 @@ class BigBirdForTokenClassificationWithBiaffine(BigBirdPreTrainedModel):
 
 @add_start_docstrings(
     """
-    BigBird Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    BigBird Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     BIG_BIRD_START_DOCSTRING,
 )

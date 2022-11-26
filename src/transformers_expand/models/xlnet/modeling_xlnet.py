@@ -6,35 +6,28 @@
 # @Software : Python 3.7
 # @About    :
 
-import warnings
-from dataclasses import dataclass
+
 from typing import List, Optional, Tuple, Union
 
 import torch
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import ACT2FN
-from transformers.modeling_utils import PoolerAnswerClass, PoolerEndLogits, PoolerStartLogits, PreTrainedModel, SequenceSummary
-from transformers.pytorch_utils import apply_chunking_to_forward
 from transformers.utils import (
     ModelOutput,
     add_code_sample_docstrings,
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
     logging,
-    replace_return_docstrings,
-
 )
 from transformers.models.xlnet.modeling_xlnet import (
     XLNetForTokenClassificationOutput,
-XLNetPreTrainedModel,
-XLNetModel,
-XLNET_START_DOCSTRING,
-XLNET_INPUTS_DOCSTRING,
-_TOKENIZER_FOR_DOC,
-_CHECKPOINT_FOR_DOC,
-_CONFIG_FOR_DOC,
+    XLNetPreTrainedModel,
+    XLNetModel,
+    XLNET_START_DOCSTRING,
+    XLNET_INPUTS_DOCSTRING,
+    _TOKENIZER_FOR_DOC,
+    _CHECKPOINT_FOR_DOC,
+    _CONFIG_FOR_DOC,
 )
 
 from ...nn import (
@@ -45,13 +38,13 @@ from ...nn import (
     SpanLoss,
 )
 
-
 logger = logging.get_logger(__name__)
+
 
 @add_start_docstrings(
     """
-    XLNet Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    XLNet Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     XLNET_START_DOCSTRING,
 )
@@ -120,23 +113,23 @@ class XLNetForTokenClassificationWithBiaffine(XLNetPreTrainedModel):
         expected_loss=0.01,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.Tensor] = None,
-        attention_mask: Optional[torch.Tensor] = None,
-        mems: Optional[torch.Tensor] = None,
-        perm_mask: Optional[torch.Tensor] = None,
-        target_mapping: Optional[torch.Tensor] = None,
-        token_type_ids: Optional[torch.Tensor] = None,
-        input_mask: Optional[torch.Tensor] = None,
-        head_mask: Optional[torch.Tensor] = None,
-        inputs_embeds: Optional[torch.Tensor] = None,
-        labels: Optional[torch.Tensor] = None,
+            self,
+            input_ids: Optional[torch.Tensor] = None,
+            attention_mask: Optional[torch.Tensor] = None,
+            mems: Optional[torch.Tensor] = None,
+            perm_mask: Optional[torch.Tensor] = None,
+            target_mapping: Optional[torch.Tensor] = None,
+            token_type_ids: Optional[torch.Tensor] = None,
+            input_mask: Optional[torch.Tensor] = None,
+            head_mask: Optional[torch.Tensor] = None,
+            inputs_embeds: Optional[torch.Tensor] = None,
+            labels: Optional[torch.Tensor] = None,
             sequence_mask: Optional[torch.Tensor] = None,
-        use_mems: Optional[bool] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
-        **kwargs,  # delete when `use_cache` is removed in XLNetModel
+            use_mems: Optional[bool] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
+            **kwargs,  # delete when `use_cache` is removed in XLNetModel
     ) -> Union[Tuple, XLNetForTokenClassificationOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
@@ -192,12 +185,10 @@ class XLNetForTokenClassificationWithBiaffine(XLNetPreTrainedModel):
         )
 
 
-
-
 @add_start_docstrings(
     """
-    XLNet Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    XLNet Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     XLNET_START_DOCSTRING,
 )
@@ -253,22 +244,22 @@ class XLNetForTokenClassificationWithGlobalPointer(XLNetPreTrainedModel):
         expected_loss=0.01,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.Tensor] = None,
-        attention_mask: Optional[torch.Tensor] = None,
-        mems: Optional[torch.Tensor] = None,
-        perm_mask: Optional[torch.Tensor] = None,
-        target_mapping: Optional[torch.Tensor] = None,
-        token_type_ids: Optional[torch.Tensor] = None,
-        input_mask: Optional[torch.Tensor] = None,
-        head_mask: Optional[torch.Tensor] = None,
-        inputs_embeds: Optional[torch.Tensor] = None,
-        labels: Optional[torch.Tensor] = None,
-        use_mems: Optional[bool] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
-        **kwargs,  # delete when `use_cache` is removed in XLNetModel
+            self,
+            input_ids: Optional[torch.Tensor] = None,
+            attention_mask: Optional[torch.Tensor] = None,
+            mems: Optional[torch.Tensor] = None,
+            perm_mask: Optional[torch.Tensor] = None,
+            target_mapping: Optional[torch.Tensor] = None,
+            token_type_ids: Optional[torch.Tensor] = None,
+            input_mask: Optional[torch.Tensor] = None,
+            head_mask: Optional[torch.Tensor] = None,
+            inputs_embeds: Optional[torch.Tensor] = None,
+            labels: Optional[torch.Tensor] = None,
+            use_mems: Optional[bool] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
+            **kwargs,  # delete when `use_cache` is removed in XLNetModel
     ) -> Union[Tuple, XLNetForTokenClassificationOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
@@ -316,4 +307,3 @@ class XLNetForTokenClassificationWithGlobalPointer(XLNetPreTrainedModel):
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
         )
-

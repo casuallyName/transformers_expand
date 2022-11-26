@@ -46,8 +46,8 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    ConvBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    ConvBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     CONVBERT_START_DOCSTRING,
 )
@@ -165,7 +165,7 @@ class ConvBertForTokenClassificationWithBiaffine(ConvBertPreTrainedModel):
             loss = loss_fct(span_logits=logits, span_label=labels, sequence_mask=sequence_mask)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -178,8 +178,8 @@ class ConvBertForTokenClassificationWithBiaffine(ConvBertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    ConvBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    ConvBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     CONVBERT_START_DOCSTRING,
 )
@@ -276,7 +276,7 @@ class ConvBertForTokenClassificationWithGlobalPointer(ConvBertPreTrainedModel):
             loss = loss_fct(logits, labels)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
