@@ -4,6 +4,7 @@ from . import (
     bert,
     big_bird,
     bloom,
+    camembert,
     distilbert,
     electra,
     ernie,
