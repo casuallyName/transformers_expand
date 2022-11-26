@@ -40,7 +40,7 @@ _import_structure = {
 
 "models.roformer": [],
     "models.squeezebert":[],
-    "models.xml":[],
+    "models.xlm":[],
 
     "nn": ["functional",
            "layer",
@@ -185,7 +185,7 @@ else:
         "SqueezeBertForTokenClassificationWithGlobalPointer",
     ]
 
-    _import_structure["models.xml"] = [
+    _import_structure["models.xlm"] = [
         "XLMForTokenClassificationWithGlobalPointer",
         "XLMForTokenClassificationWithBiaffine"
     ]
