@@ -95,6 +95,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
         pass_list = []
     for model_name, model_obj_name in model_list:
         if model_name  in pass_list:
+            res.append(f'{model_name:<20}: \033[34m - 跳过测试\033[30m')
             continue
         print(f'Test {model_obj_name}{end} ...')
         model_ckp_list, model_1, model_2 = get_checkpoint_name(model_name=model_name,
