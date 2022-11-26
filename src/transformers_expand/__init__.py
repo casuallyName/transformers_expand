@@ -38,11 +38,12 @@ _import_structure = {
     "models.ernie": [],
     "models.roberta": [],
 
-"models.roformer": [],
-    "models.squeezebert":[],
-    "models.xlm":[],
-    "models.xlm_roberta":[],
-"models.xlm_roberta_xl":[],
+    "models.roformer": [],
+    "models.squeezebert": [],
+    "models.xlm": [],
+    "models.xlm_roberta": [],
+    "models.xlm_roberta_xl": [],
+    "models.yoso": [],
 
     "nn": ["functional",
            "layer",
@@ -199,9 +200,10 @@ else:
         "XLMRobertaXLForTokenClassificationWithBiaffine",
         "XLMRobertaXLForTokenClassificationWithGlobalPointer",
     ]
-
-
-
+    _import_structure["models.yoso"] = [
+        "YosoForTokenClassificationWithBiaffine",
+        "YosoForTokenClassificationWithGlobalPointer",
+    ]
 
 # Direct imports for type-checking
 if TYPE_CHECKING:
@@ -312,6 +314,10 @@ if TYPE_CHECKING:
         from .models.xlm_roberta_xl import (
             XLMRobertaXLForTokenClassificationWithBiaffine,
             XLMRobertaXLForTokenClassificationWithGlobalPointer,
+        )
+        from .models.yoso import (
+            YosoForTokenClassificationWithBiaffine,
+            YosoForTokenClassificationWithGlobalPointer
         )
 
         from .nn import (
