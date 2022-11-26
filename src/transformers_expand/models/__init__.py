@@ -18,5 +18,5 @@ from . import (
     roberta,
 roformer,
 squeezebert,
-xlm
+xlm,
 )
