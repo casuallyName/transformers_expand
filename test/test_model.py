@@ -66,6 +66,9 @@ def forward_func_for_biaffine(model, tokenizer):
     span_label = [0 for i in range(max_length)]
     span_label = [span_label for i in range(max_length)]
     inputs['labels'] = torch.tensor([span_label])
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    model.to(device)
+    inputs = {k:v.to(device)for k,v in inputs.items()}
     loss = model(**inputs).loss
     return loss
 
@@ -79,6 +82,9 @@ def forward_func_for_global_pointer(model, tokenizer):
                        return_tensors='pt'
                        )
     inputs['labels'] = torch.zeros(size=(1, 2, 10, 10))
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    model.to(device)
+    inputs = {k: v.to(device) for k, v in inputs.items()}
     loss = model(**inputs).loss
     return loss
 
