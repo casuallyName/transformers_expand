@@ -89,7 +89,7 @@ def check_model(model_list, end, auto_name, forward_func):
                                                                end=end,
                                                                auto_name=auto_name)
         if model_ckp_list is None:
-            print(f'\t{model_name:<20}: \033[33m Θ 未支持\033[30m')
+            print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
@@ -105,7 +105,7 @@ def check_model(model_list, end, auto_name, forward_func):
                     break
                 except:
                     print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
-                    traceback.print_exc()
+                    print(traceback.print_exc())
 
 
 if __name__ == '__main__':
