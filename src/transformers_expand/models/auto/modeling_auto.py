@@ -41,13 +41,13 @@ MODEL_FOR_TOKEN_CLASSIFICATION_WITH_BIAFFINE_MAPPING_NAMES = OrderedDict(
         # ("qdqbert", "QDQBertForTokenClassificationWithBiaffine"),
         # ("rembert", "RemBertForTokenClassificationWithBiaffine"),
         ("roberta", "RobertaForTokenClassificationWithBiaffine"),
-        # ("roformer", "RoFormerForTokenClassificationWithBiaffine"),
-        # ("squeezebert", "SqueezeBertForTokenClassificationWithBiaffine"),
-        # ("xlm", "XLMForTokenClassificationWithBiaffine"),
-        # ("xlm-roberta", "XLMRobertaForTokenClassificationWithBiaffine"),
-        # ("xlm-roberta-xl", "XLMRobertaXLForTokenClassificationWithBiaffine"),
-        # ("xlnet", "XLNetForTokenClassificationWithBiaffine"),
-        # ("yoso", "YosoForTokenClassificationWithBiaffine"),
+        ("roformer", "RoFormerForTokenClassificationWithBiaffine"),
+        ("squeezebert", "SqueezeBertForTokenClassificationWithBiaffine"),
+        ("xlm", "XLMForTokenClassificationWithBiaffine"),
+        ("xlm-roberta", "XLMRobertaForTokenClassificationWithBiaffine"),
+        ("xlm-roberta-xl", "XLMRobertaXLForTokenClassificationWithBiaffine"),
+        ("xlnet", "XLNetForTokenClassificationWithBiaffine"),
+        ("yoso", "YosoForTokenClassificationWithBiaffine"),
     ]
 )
 
@@ -97,13 +97,13 @@ MODEL_FOR_TOKEN_CLASSIFICATION_WITH_GLOBAL_POINTER_MAPPING_NAMES = OrderedDict(
         # ("qdqbert", "QDQBertForTokenClassificationWithGlobalPointer"),
         # ("rembert", "RemBertForTokenClassificationWithGlobalPointer"),
         ("roberta", "RobertaForTokenClassificationWithGlobalPointer"),
-        # ("roformer", "RoFormerForTokenClassificationWithGlobalPointer"),
-        # ("squeezebert", "SqueezeBertForTokenClassificationWithGlobalPointer"),
-        # ("xlm", "XLMForTokenClassificationWithGlobalPointer"),
-        # ("xlm-roberta", "XLMRobertaForTokenClassificationWithGlobalPointer"),
-        # ("xlm-roberta-xl", "XLMRobertaXLForTokenClassificationWithGlobalPointer"),
-        # ("xlnet", "XLNetForTokenClassificationWithGlobalPointer"),
-        # ("yoso", "YosoForTokenClassificationWithGlobalPointer"),
+        ("roformer", "RoFormerForTokenClassificationWithGlobalPointer"),
+        ("squeezebert", "SqueezeBertForTokenClassificationWithGlobalPointer"),
+        ("xlm", "XLMForTokenClassificationWithGlobalPointer"),
+        ("xlm-roberta", "XLMRobertaForTokenClassificationWithGlobalPointer"),
+        ("xlm-roberta-xl", "XLMRobertaXLForTokenClassificationWithGlobalPointer"),
+        ("xlnet", "XLNetForTokenClassificationWithGlobalPointer"),
+        ("yoso", "YosoForTokenClassificationWithGlobalPointer"),
     ]
 )
 

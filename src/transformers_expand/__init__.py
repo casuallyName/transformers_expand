@@ -37,6 +37,8 @@ _import_structure = {
     "models.electra": [],
     "models.ernie": [],
     "models.roberta": [],
+
+"models.roformer": [],
     "nn": ["functional",
            "layer",
            "modules",
@@ -170,6 +172,14 @@ else:
         "RobertaForTokenClassificationWithGlobalPointer",
     ]
 
+    _import_structure["models.roformer"] = [
+        "RoFormerForTokenClassificationWithBiaffine",
+        "RoFormerForTokenClassificationWithGlobalPointer",
+    ]
+
+
+
+
 # Direct imports for type-checking
 if TYPE_CHECKING:
 
@@ -259,6 +269,10 @@ if TYPE_CHECKING:
         from .models.roberta import (
             RobertaForTokenClassificationWithBiaffine,
             RobertaForTokenClassificationWithGlobalPointer,
+        )
+        from .models.roformer import (
+            RoFormerForTokenClassificationWithBiaffine,
+            RoFormerForTokenClassificationWithGlobalPointer,
         )
 
         from .nn import (
