@@ -89,9 +89,13 @@ def forward_func_for_global_pointer(model, tokenizer):
     return loss
 
 
-def check_model(model_list, end, auto_name, forward_func):
+def check_model(model_list, end, auto_name, forward_func,pass_list = None):
     res = []
+    if pass_list is None:
+        pass_list = []
     for model_name, model_obj_name in model_list:
+        if model_name  in pass_list:
+            continue
         print(f'Test {model_obj_name}{end} ...')
         model_ckp_list, model_1, model_2 = get_checkpoint_name(model_name=model_name,
                                                                model_obj_name=model_obj_name,
@@ -131,16 +135,19 @@ if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
     result = {}
+    pass_list = ['xlm_roberta_xl']
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
                                      auto_name='AutoModelForTokenClassificationWithBiaffine',
-                                     forward_func=forward_func_for_biaffine
+                                     forward_func=forward_func_for_biaffine,
+                                     pass_list=pass_list
                                      )
 
     result['GlobalPointer'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                           end='WithGlobalPointer',
                                           auto_name='AutoModelForTokenClassificationWithGlobalPointer',
                                           forward_func=forward_func_for_global_pointer,
+                                          pass_list=pass_list
                                           )
 
     print('Result:')
