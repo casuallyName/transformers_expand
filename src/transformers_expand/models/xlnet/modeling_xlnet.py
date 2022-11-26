@@ -87,10 +87,6 @@ class XLNetForTokenClassificationWithBiaffine(XLNetPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            classifier_dropout = (
-                config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
-            )
-            self.dropout = nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -158,8 +154,7 @@ class XLNetForTokenClassificationWithBiaffine(XLNetPreTrainedModel):
 
         if self.use_lstm:
             sequence_output, _ = self.lstm(sequence_output)
-        else:
-            sequence_output = self.dropout(sequence_output)
+
 
         start_logits = self.start_layer(sequence_output)
         end_logits = self.end_layer(sequence_output)
@@ -198,11 +193,6 @@ class XLNetForTokenClassificationWithGlobalPointer(XLNetPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.transformer = XLNetModel(config)
-
-        classifier_dropout = (
-            config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
-        )
-        self.dropout = nn.Dropout(classifier_dropout)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -285,8 +275,6 @@ class XLNetForTokenClassificationWithGlobalPointer(XLNetPreTrainedModel):
         )
 
         sequence_output = outputs[0]
-
-        sequence_output = self.dropout(sequence_output)
 
         logits = self.global_pointer(sequence_output, mask=attention_mask)
 
