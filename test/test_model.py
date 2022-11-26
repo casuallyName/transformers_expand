@@ -83,9 +83,9 @@ def forward_func_for_global_pointer(model, tokenizer):
     return loss
 
 
-def check_model(model_list, end, auto_name, forward_func):
+def check_model(model_list, end, auto_name, forward_func,desc=None):
     res = []
-    for model_name, model_obj_name in tqdm(model_list):
+    for model_name, model_obj_name in tqdm(model_list,desc=desc):
         model_ckp_list, model_1, model_2 = get_checkpoint_name(model_name=model_name,
                                                                model_obj_name=model_obj_name,
                                                                end=end,
@@ -126,12 +126,14 @@ if __name__ == '__main__':
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
                                      auto_name='AutoModelForTokenClassificationWithBiaffine',
-                                     forward_func=forward_func_for_biaffine)
+                                     forward_func=forward_func_for_biaffine,
+                                     desc='Check Biaffine')
 
     result['GlobalPointer'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                           end='WithGlobalPointer',
                                           auto_name='AutoModelForTokenClassificationWithGlobalPointer',
-                                          forward_func=forward_func_for_global_pointer)
+                                          forward_func=forward_func_for_global_pointer,
+                                          desc='Check GlobalPointer')
 
     print('Result:')
     for name, res in result.items():
