@@ -7,6 +7,7 @@ from . import (
     camembert,
     canine,
     convbert,
+    data2vec,
     distilbert,
     electra,
     ernie,

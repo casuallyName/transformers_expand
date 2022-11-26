@@ -31,6 +31,7 @@ _import_structure = {
     "models.canine": [],
     "models.convbert": [],
     "models.distilbert": [],
+    "models.data2vec":[],
     "models.electra": [],
     "models.ernie": [],
     "models.roberta": [],
@@ -128,6 +129,11 @@ else:
         "ConvBertForTokenClassificationWithGlobalPointer",
     ]
 
+    _import_structure["models.data2vec"] = [
+        "Data2VecTextForTokenClassificationWithBiaffine",
+        "Data2VecTextForTokenClassificationWithGlobalPointer",
+    ]
+
     _import_structure["models.distilbert"].extend(
         [
             "DistilBertForTokenClassificationWithBiaffine",
@@ -215,6 +221,11 @@ if TYPE_CHECKING:
         from .models.distilbert import (
             DistilBertForTokenClassificationWithBiaffine,
             DistilBertForTokenClassificationWithGlobalPointer,
+        )
+
+        from .models.data2vec import (
+            Data2VecTextForTokenClassificationWithBiaffine,
+            Data2VecTextForTokenClassificationWithGlobalPointer,
         )
 
         from .models.electra import (
