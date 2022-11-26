@@ -27,9 +27,6 @@ from ...nn import (
 logger = logging.get_logger(__name__)
 
 _CHECKPOINT_FOR_TOKEN_CLASSIFICATION = "hfl/chinese-electra-180g-base-discriminator"
-_TOKEN_CLASS_EXPECTED_OUTPUT = (
-    "{'entity':'小明', 'type':'PER', 'start':3, 'end':4}"
-)
 _TOKEN_CLASS_EXPECTED_LOSS = 0.01
 
 
@@ -103,7 +100,7 @@ class ElectraForTokenClassificationWithBiaffine(ElectraPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(
@@ -217,7 +214,7 @@ class ElectraForTokenClassificationWithGlobalPointer(ElectraPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(

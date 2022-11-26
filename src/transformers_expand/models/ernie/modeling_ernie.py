@@ -31,7 +31,9 @@ from transformers.models.ernie.modeling_ernie import (
     ErnieModel,
     ERNIE_START_DOCSTRING,
     ERNIE_INPUTS_DOCSTRING,
-    _TOKENIZER_FOR_DOC, _CONFIG_FOR_DOC
+    _TOKENIZER_FOR_DOC,
+    _CONFIG_FOR_DOC,
+    _CHECKPOINT_FOR_DOC
 )
 
 from ...nn import (
@@ -44,16 +46,10 @@ from ...nn import (
 
 logger = logging.get_logger(__name__)
 
-_CHECKPOINT_FOR_TOKEN_CLASSIFICATION = "hfl/chinese-electra-180g-base-discriminator"
-_TOKEN_CLASS_EXPECTED_OUTPUT = (
-    "{'entity':'小明', 'type':'PER', 'start':3, 'end':4}"
-)
-_TOKEN_CLASS_EXPECTED_LOSS = 0.01
-
 
 @add_start_docstrings(
     """
-    Ernie Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
+    Ernie Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     ERNIE_START_DOCSTRING,
@@ -119,11 +115,11 @@ class ErnieForTokenClassificationWithBiaffine(ErniePreTrainedModel):
     @add_start_docstrings_to_model_forward(ERNIE_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
-        expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        expected_loss=0.01,
     )
     def forward(
             self,
@@ -237,11 +233,11 @@ class ErnieForTokenClassificationWithGlobalPointer(ErniePreTrainedModel):
     @add_start_docstrings_to_model_forward(ERNIE_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
-        expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        expected_loss=0.01,
     )
     def forward(
             self,

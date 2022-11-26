@@ -7,17 +7,12 @@
 # @About    :
 
 
-import math
-import os
-from operator import attrgetter
 from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import ACT2FN, get_activation
 from transformers.modeling_outputs import (
     BaseModelOutputWithCrossAttentions,
     MaskedLMOutput,
@@ -26,8 +21,6 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel, SequenceSummary
-from transformers.pytorch_utils import apply_chunking_to_forward, find_pruneable_heads_and_indices, prune_linear_layer
 from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
     logging
 from transformers.models.convbert.modeling_convbert import (
@@ -53,7 +46,7 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    ConvBERT Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    ConvBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     CONVBERT_START_DOCSTRING,
@@ -119,6 +112,7 @@ class ConvBertForTokenClassificationWithBiaffine(ConvBertPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,
@@ -184,7 +178,7 @@ class ConvBertForTokenClassificationWithBiaffine(ConvBertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    ConvBERT Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    ConvBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     CONVBERT_START_DOCSTRING,
@@ -236,6 +230,7 @@ class ConvBertForTokenClassificationWithGlobalPointer(ConvBertPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,

@@ -48,7 +48,7 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    CANINE Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    CANINE Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     CANINE_START_DOCSTRING,
@@ -112,6 +112,7 @@ class CanineForTokenClassificationWithBiaffine(CaninePreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,
@@ -177,7 +178,7 @@ class CanineForTokenClassificationWithBiaffine(CaninePreTrainedModel):
 
 @add_start_docstrings(
     """
-    CANINE Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    CANINE Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     CANINE_START_DOCSTRING,
@@ -226,6 +227,7 @@ class CanineForTokenClassificationWithGlobalPointer(CaninePreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,

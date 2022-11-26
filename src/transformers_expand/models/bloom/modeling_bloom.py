@@ -49,7 +49,7 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Bloom Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    Bloom Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     BLOOM_START_DOCSTRING,
@@ -200,7 +200,7 @@ class BloomForTokenClassificationWithBiaffine(BloomPreTrainedModel):
 
 @add_start_docstrings(
     """
-    Bloom Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    Bloom Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     BLOOM_START_DOCSTRING,

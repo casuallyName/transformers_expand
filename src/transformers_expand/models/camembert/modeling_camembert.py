@@ -6,20 +6,12 @@
 # @Software : Python 3.7
 # @About    :
 
-import math
+
 from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
-
-from ...nn import (
-    GlobalPointer,
-    EfficientGlobalPointer,
-    MultiLabelCategoricalForNerCrossEntropyLoss,
-    Biaffine,
-    SpanLoss,
-)
 
 from transformers.modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
@@ -48,12 +40,20 @@ from transformers.models.camembert.modeling_camembert import (
     CamembertPreTrainedModel,
 )
 
+from ...nn import (
+    GlobalPointer,
+    EfficientGlobalPointer,
+    MultiLabelCategoricalForNerCrossEntropyLoss,
+    Biaffine,
+    SpanLoss,
+)
+
 logger = logging.get_logger(__name__)
 
 
 @add_start_docstrings(
     """
-    CamemBERT Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g.
+    CamemBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
     for Named-Entity-Recognition (NER) tasks.
     """,
     CAMEMBERT_START_DOCSTRING,
@@ -191,7 +191,7 @@ class CamembertForTokenClassificationWithBiaffine(CamembertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    CamemBERT Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g.
+    CamemBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
     for Named-Entity-Recognition (NER) tasks.
     """,
     CAMEMBERT_START_DOCSTRING,

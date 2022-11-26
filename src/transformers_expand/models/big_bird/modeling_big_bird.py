@@ -13,9 +13,9 @@ import torch.utils.checkpoint
 from torch import nn
 
 from transformers.modeling_outputs import (
-    # MaskedLMOutput,
-    # MultipleChoiceModelOutput,
-    # SequenceClassifierOutput,
+    MaskedLMOutput,
+    MultipleChoiceModelOutput,
+    SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 from transformers.utils import (
@@ -47,7 +47,7 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    BigBird Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    BigBird Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     BIG_BIRD_START_DOCSTRING,
@@ -181,7 +181,7 @@ class BigBirdForTokenClassificationWithBiaffine(BigBirdPreTrainedModel):
 
 @add_start_docstrings(
     """
-    BigBird Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    BigBird Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     BIG_BIRD_START_DOCSTRING,

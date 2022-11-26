@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# @Time     : 2022/11/26 15:51
+# @File     : modeling_bert.py.py
+# @Author   : Zhou Hang
+# @Email    : zhouhang@idataway.com
+# @Software : Python 3.7
+# @About    :
 import torch.utils.checkpoint
 from torch import nn
 

@@ -7,15 +7,12 @@
 # @About    :
 
 
-from collections.abc import Sequence
 from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import ACT2FN
 from transformers.modeling_outputs import (
     BaseModelOutput,
     MaskedLMOutput,
@@ -23,8 +20,7 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import softmax_backward_data
+
 from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
     logging
 
@@ -34,7 +30,6 @@ from transformers.models.deberta.modeling_deberta import (
     _TOKENIZER_FOR_DOC,
     _CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
     _CONFIG_FOR_DOC,
-    _TOKEN_CLASS_EXPECTED_OUTPUT,
     _TOKEN_CLASS_EXPECTED_LOSS,
 
     DebertaPreTrainedModel,
@@ -49,10 +44,12 @@ from ...nn import (
     SpanLoss,
 )
 
+logger = logging.get_logger(__name__)
+
 
 @add_start_docstrings(
     """
-    DeBERTa Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    DeBERTa Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     DEBERTA_START_DOCSTRING,
@@ -118,7 +115,7 @@ class DebertaForTokenClassificationWithBiaffine(DebertaPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(
@@ -183,7 +180,7 @@ class DebertaForTokenClassificationWithBiaffine(DebertaPreTrainedModel):
 
 @add_start_docstrings(
     """
-    DeBERTa Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    DeBERTa Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     DEBERTA_START_DOCSTRING,
@@ -234,7 +231,7 @@ class DebertaForTokenClassificationWithGlobalPointer(DebertaPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(

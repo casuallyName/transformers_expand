@@ -12,12 +12,12 @@ import torch
 from torch import nn
 
 from transformers.modeling_outputs import (
-    # BaseModelOutput,
-    # BaseModelOutputWithPooling,
-    # MaskedLMOutput,
-    # MultipleChoiceModelOutput,
-    # QuestionAnsweringModelOutput,
-    # SequenceClassifierOutput,
+    BaseModelOutput,
+    BaseModelOutputWithPooling,
+    MaskedLMOutput,
+    MultipleChoiceModelOutput,
+    QuestionAnsweringModelOutput,
+    SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 from transformers.utils import (
@@ -52,7 +52,7 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Albert Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    Albert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     ALBERT_START_DOCSTRING,
@@ -188,7 +188,7 @@ class AlbertForTokenClassificationWithBiaffine(AlbertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    Albert Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    Albert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     ALBERT_START_DOCSTRING,

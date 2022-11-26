@@ -31,9 +31,9 @@ _import_structure = {
     "models.canine": [],
     "models.convbert": [],
     "models.distilbert": [],
-    "models.data2vec":[],
-"models.deberta":[],
-"models.deberta_v2":[],
+    "models.data2vec": [],
+    "models.deberta": [],
+    "models.deberta_v2": [],
     "models.electra": [],
     "models.ernie": [],
     "models.roberta": [],
@@ -152,7 +152,6 @@ else:
         "DebertaV2ForTokenClassificationWithBiaffine",
         "DebertaV2ForTokenClassificationWithGlobalPointer"
     ]
-
 
     _import_structure["models.electra"].extend(
         [

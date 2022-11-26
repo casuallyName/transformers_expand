@@ -6,13 +6,11 @@
 # @Software : Python 3.7
 # @About    :
 
-import math
 from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
 from transformers.activations import ACT2FN, gelu
 from transformers.modeling_outputs import (
@@ -25,8 +23,6 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import apply_chunking_to_forward, find_pruneable_heads_and_indices, prune_linear_layer
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
@@ -35,14 +31,9 @@ from transformers.utils import (
     replace_return_docstrings,
 )
 from transformers.models.roberta.modeling_roberta import (
-    _CHECKPOINT_FOR_DOC,
     _CONFIG_FOR_DOC,
     _TOKENIZER_FOR_DOC,
-
-    ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST,
-
     ROBERTA_START_DOCSTRING,
-
     ROBERTA_INPUTS_DOCSTRING,
     RobertaPreTrainedModel,
     RobertaModel,
@@ -61,7 +52,7 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Roberta Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    Roberta Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     ROBERTA_START_DOCSTRING,
@@ -198,7 +189,7 @@ class RobertaForTokenClassificationWithBiaffine(RobertaPreTrainedModel):
 
 @add_start_docstrings(
     """
-    Roberta Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    Roberta Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     ROBERTA_START_DOCSTRING,

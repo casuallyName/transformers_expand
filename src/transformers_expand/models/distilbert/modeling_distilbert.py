@@ -5,18 +5,14 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-import math
+
 from typing import Dict, List, Optional, Set, Tuple, Union
 
-import numpy as np
 import torch
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
 from transformers.configuration_utils import PretrainedConfig
 
-from transformers.activations import get_activation
-from transformers.deepspeed import is_deepspeed_zero3_enabled
 from transformers.modeling_outputs import (
     BaseModelOutput,
     MaskedLMOutput,
@@ -25,8 +21,6 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import apply_chunking_to_forward, find_pruneable_heads_and_indices, prune_linear_layer
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
@@ -42,7 +36,6 @@ from transformers.models.distilbert.modeling_distilbert import (
     _CHECKPOINT_FOR_DOC,
     _CONFIG_FOR_DOC,
     _TOKENIZER_FOR_DOC,
-    DISTILBERT_PRETRAINED_MODEL_ARCHIVE_LIST,
 )
 
 logger = logging.get_logger(__name__)
@@ -58,7 +51,7 @@ from ...nn import (
 
 @add_start_docstrings(
     """
-    DistilBert Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g.
+    DistilBert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
     for Named-Entity-Recognition (NER) tasks.
     """,
     DISTILBERT_START_DOCSTRING,
@@ -144,6 +137,7 @@ class DistilBertForTokenClassificationWithBiaffine(DistilBertPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,
@@ -205,7 +199,7 @@ class DistilBertForTokenClassificationWithBiaffine(DistilBertPreTrainedModel):
 
 @add_start_docstrings(
     """
-    DistilBert Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g.
+    DistilBert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
     for Named-Entity-Recognition (NER) tasks.
     """,
     DISTILBERT_START_DOCSTRING,
@@ -273,6 +267,7 @@ class DistilBertForTokenClassificationWithGlobalPointer(DistilBertPreTrainedMode
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,

@@ -6,15 +6,13 @@
 # @Software : Python 3.7
 # @About    :
 
-from collections.abc import Sequence
+
 from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, LayerNorm, MSELoss
 
-from transformers.activations import ACT2FN
 from transformers.modeling_outputs import (
     BaseModelOutput,
     MaskedLMOutput,
@@ -23,23 +21,21 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import softmax_backward_data
-from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, logging
+
+from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
+    logging
 
 from transformers.models.deberta_v2.modeling_deberta_v2 import (
-DEBERTA_START_DOCSTRING,
-DEBERTA_INPUTS_DOCSTRING,
-_TOKENIZER_FOR_DOC,
-_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
-_CONFIG_FOR_DOC,
-_TOKEN_CLASS_EXPECTED_OUTPUT,
-_TOKEN_CLASS_EXPECTED_LOSS,
+    DEBERTA_START_DOCSTRING,
+    DEBERTA_INPUTS_DOCSTRING,
+    _TOKENIZER_FOR_DOC,
+    _CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
+    _CONFIG_FOR_DOC,
+    _TOKEN_CLASS_EXPECTED_LOSS,
 
-DebertaV2PreTrainedModel,
-DebertaV2Model,
+    DebertaV2PreTrainedModel,
+    DebertaV2Model,
 )
-
 
 from ...nn import (
     GlobalPointer,
@@ -49,14 +45,12 @@ from ...nn import (
     SpanLoss,
 )
 
-
 logger = logging.get_logger(__name__)
-
 
 
 @add_start_docstrings(
     """
-    DeBERTa Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    DeBERTa Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     DEBERTA_START_DOCSTRING,
@@ -88,9 +82,7 @@ class DebertaV2ForTokenClassificationWithBiaffine(DebertaV2PreTrainedModel):
         self.use_lstm = config.use_lstm
         self.biaffine_input_size = config.biaffine_input_size
 
-
         self.deberta = DebertaV2Model(config)
-
 
         if self.use_lstm:
             self.lstm = torch.nn.LSTM(input_size=768,
@@ -125,21 +117,21 @@ class DebertaV2ForTokenClassificationWithBiaffine(DebertaV2PreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.Tensor] = None,
-        attention_mask: Optional[torch.Tensor] = None,
-        token_type_ids: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.Tensor] = None,
-        inputs_embeds: Optional[torch.Tensor] = None,
-        labels: Optional[torch.Tensor] = None,
+            self,
+            input_ids: Optional[torch.Tensor] = None,
+            attention_mask: Optional[torch.Tensor] = None,
+            token_type_ids: Optional[torch.Tensor] = None,
+            position_ids: Optional[torch.Tensor] = None,
+            inputs_embeds: Optional[torch.Tensor] = None,
+            labels: Optional[torch.Tensor] = None,
             sequence_mask: Optional[torch.Tensor] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
@@ -188,11 +180,9 @@ class DebertaV2ForTokenClassificationWithBiaffine(DebertaV2PreTrainedModel):
         )
 
 
-
-
 @add_start_docstrings(
     """
-    DeBERTa Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g. for
+    DeBERTa Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
     Named-Entity-Recognition (NER) tasks.
     """,
     DEBERTA_START_DOCSTRING,
@@ -244,20 +234,20 @@ class DebertaV2ForTokenClassificationWithGlobalPointer(DebertaV2PreTrainedModel)
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.Tensor] = None,
-        attention_mask: Optional[torch.Tensor] = None,
-        token_type_ids: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.Tensor] = None,
-        inputs_embeds: Optional[torch.Tensor] = None,
-        labels: Optional[torch.Tensor] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
+            self,
+            input_ids: Optional[torch.Tensor] = None,
+            attention_mask: Optional[torch.Tensor] = None,
+            token_type_ids: Optional[torch.Tensor] = None,
+            position_ids: Optional[torch.Tensor] = None,
+            inputs_embeds: Optional[torch.Tensor] = None,
+            labels: Optional[torch.Tensor] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):

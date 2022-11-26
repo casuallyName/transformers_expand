@@ -6,15 +6,12 @@
 # @Software : Python 3.7
 # @About    :
 
-import math
 from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import ACT2FN, gelu
 from transformers.modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
     BaseModelOutputWithPoolingAndCrossAttentions,
@@ -25,8 +22,6 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import apply_chunking_to_forward, find_pruneable_heads_and_indices, prune_linear_layer
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
@@ -43,7 +38,6 @@ from transformers.models.data2vec.modeling_data2vec_text import (
     DATA2VECTEXT_INPUTS_DOCSTRING,
     Data2VecTextModel,
     Data2VecTextPreTrainedModel,
-    TokenClassifierOutput,
     # add_code_sample_docstrings,
     # add_start_docstrings_to_model_forward,
     # add_start_docstrings,
@@ -62,7 +56,7 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Data2VecText Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g.
+    Data2VecText Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
     for Named-Entity-Recognition (NER) tasks.
     """,
     DATA2VECTEXT_START_DOCSTRING,
@@ -132,6 +126,7 @@ class Data2VecTextForTokenClassificationWithBiaffine(Data2VecTextPreTrainedModel
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,
@@ -197,7 +192,7 @@ class Data2VecTextForTokenClassificationWithBiaffine(Data2VecTextPreTrainedModel
 
 @add_start_docstrings(
     """
-    Data2VecText Model with a token classification head on top (a linear layer on top of the hidden-states output) e.g.
+    Data2VecText Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
     for Named-Entity-Recognition (NER) tasks.
     """,
     DATA2VECTEXT_START_DOCSTRING,
@@ -252,6 +247,7 @@ class Data2VecTextForTokenClassificationWithGlobalPointer(Data2VecTextPreTrained
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
     )
     def forward(
             self,
