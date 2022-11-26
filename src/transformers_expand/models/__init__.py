@@ -20,4 +20,5 @@ from . import (
     squeezebert,
     xlm,
     xlm_roberta,
+    xlm_roberta_xl,
 )

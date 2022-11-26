@@ -42,6 +42,7 @@ _import_structure = {
     "models.squeezebert":[],
     "models.xlm":[],
     "models.xlm_roberta":[],
+"models.xlm_roberta_xl":[],
 
     "nn": ["functional",
            "layer",
@@ -194,6 +195,11 @@ else:
         "XLMRobertaForTokenClassificationWithGlobalPointer",
         "XLMRobertaForTokenClassificationWithBiaffine"
     ]
+    _import_structure["models.xlm_roberta_xl"] = [
+        "XLMRobertaXLForTokenClassificationWithBiaffine",
+        "XLMRobertaXLForTokenClassificationWithGlobalPointer",
+    ]
+
 
 
 
@@ -302,6 +308,10 @@ if TYPE_CHECKING:
         from .models.xlm_roberta import (
             XLMRobertaForTokenClassificationWithBiaffine,
             XLMRobertaForTokenClassificationWithGlobalPointer,
+        )
+        from .models.xlm_roberta_xl import (
+            XLMRobertaXLForTokenClassificationWithBiaffine,
+            XLMRobertaXLForTokenClassificationWithGlobalPointer,
         )
 
         from .nn import (
