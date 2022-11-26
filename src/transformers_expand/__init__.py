@@ -28,6 +28,7 @@ _import_structure = {
     "models.big_bird": [],
     "models.bloom": [],
     "models.camembert": [],
+    "models.canine":[],
     "models.distilbert": [],
     "models.electra": [],
     "models.ernie": [],
@@ -115,6 +116,12 @@ else:
             "CamembertForTokenClassificationWithGlobalPointer"
         ]
     )
+
+    _import_structure["models.canine"] = [
+        "CanineForTokenClassificationWithBiaffine",
+        "CanineForTokenClassificationWithGlobalPointer"
+    ]
+
     _import_structure["models.distilbert"].extend(
         [
             "DistilBertForTokenClassificationWithBiaffine",
@@ -187,6 +194,11 @@ if TYPE_CHECKING:
         from .models.camembert import (
             CamembertForTokenClassificationWithBiaffine,
             CamembertForTokenClassificationWithGlobalPointer
+        )
+
+        from .models.canine import (
+            CanineForTokenClassificationWithBiaffine,
+            CanineForTokenClassificationWithGlobalPointer,
         )
 
         from .models.distilbert import (
