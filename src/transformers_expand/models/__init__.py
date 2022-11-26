@@ -6,6 +6,7 @@ from . import (
     bloom,
     camembert,
     canine,
+    convbert,
     distilbert,
     electra,
     ernie,
