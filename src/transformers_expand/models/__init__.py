@@ -8,6 +8,8 @@ from . import (
     canine,
     convbert,
     data2vec,
+deberta,
+deberta_v2,
     distilbert,
     electra,
     ernie,

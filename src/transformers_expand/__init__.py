@@ -32,6 +32,8 @@ _import_structure = {
     "models.convbert": [],
     "models.distilbert": [],
     "models.data2vec":[],
+"models.deberta":[],
+"models.deberta_v2":[],
     "models.electra": [],
     "models.ernie": [],
     "models.roberta": [],
@@ -141,6 +143,17 @@ else:
         ]
     )
 
+    _import_structure["models.deberta"] = [
+        "DebertaForTokenClassificationWithBiaffine",
+        "DebertaForTokenClassificationWithGlobalPointer"
+    ]
+
+    _import_structure["models.deberta_v2"] = [
+        "DebertaV2ForTokenClassificationWithBiaffine",
+        "DebertaV2ForTokenClassificationWithGlobalPointer"
+    ]
+
+
     _import_structure["models.electra"].extend(
         [
             "ElectraForTokenClassificationWithGlobalPointer",
@@ -226,6 +239,14 @@ if TYPE_CHECKING:
         from .models.data2vec import (
             Data2VecTextForTokenClassificationWithBiaffine,
             Data2VecTextForTokenClassificationWithGlobalPointer,
+        )
+        from .models.deberta import (
+            DebertaForTokenClassificationWithBiaffine,
+            DebertaForTokenClassificationWithGlobalPointer
+        )
+        from .models.deberta_v2 import (
+            DebertaV2ForTokenClassificationWithBiaffine,
+            DebertaV2ForTokenClassificationWithGlobalPointer,
         )
 
         from .models.electra import (
