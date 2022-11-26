@@ -99,14 +99,16 @@ def check_model(model_list, end, auto_name, forward_func):
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
-                    model_1 = model_1.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
-                    model_2 = model_2.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
                     tokenizer = transformers.AutoTokenizer.from_pretrained(
                         pretrained_model_name_or_path=pretrained_model_name_or_path,
                         cache_dir='./Cache',
                     )
+                    model_1 = model_1.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
                     loss_1 = forward_func(model_1, tokenizer)
+                    del model_1
+                    model_2 = model_2.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
                     loss_2 = forward_func(model_2, tokenizer)
+                    del model_2
                     # print(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m'
                     res.append(f'{model_name:<20}: \033[32m ✔ 通过\033[30m')
