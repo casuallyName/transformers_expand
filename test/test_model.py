@@ -16,6 +16,8 @@ import transformers
 import transformers_expand
 from transformers.utils import logging
 
+from tqdm import tqdm
+
 logging.set_verbosity(logging.ERROR)
 transformers.set_seed(0)
 
@@ -83,7 +85,7 @@ def forward_func_for_global_pointer(model, tokenizer):
 
 def check_model(model_list, end, auto_name, forward_func):
     res = []
-    for model_name, model_obj_name in model_list:
+    for model_name, model_obj_name in tqdm(model_list):
         model_ckp_list, model_1, model_2 = get_checkpoint_name(model_name=model_name,
                                                                model_obj_name=model_obj_name,
                                                                end=end,
