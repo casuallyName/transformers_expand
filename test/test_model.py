@@ -94,7 +94,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
     if pass_list is None:
         pass_list = []
     for model_name, model_obj_name in model_list:
-        if model_name  in pass_list:
+        if model_name in pass_list:
             res.append(f'{model_name:<20}: \033[34m - 跳过测试\033[30m')
             continue
         print(f'Test {model_obj_name}{end} ...')
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
     result = {}
-    pass_list = ['xlm_roberta_xl']
+    pass_list = ['xlm-roberta-xl']
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
                                      auto_name='AutoModelForTokenClassificationWithBiaffine',
