@@ -10,13 +10,7 @@ from torch import nn
 
 from typing import List, Optional, Tuple, Union, Any
 
-from ...nn import (
-    GlobalPointer,
-    EfficientGlobalPointer,
-    MultiLabelCategoricalForNerCrossEntropyLoss,
-    Biaffine,
-    SpanLoss,
-)
+
 
 from transformers.utils import logging
 
@@ -32,6 +26,15 @@ from transformers.models.bert.modeling_bert import (
     add_start_docstrings_to_model_forward,
     add_start_docstrings,
 )
+
+from ...nn import (
+    GlobalPointer,
+    EfficientGlobalPointer,
+    MultiLabelCategoricalForNerCrossEntropyLoss,
+    Biaffine,
+    SpanLoss,
+)
+
 
 logger = logging.get_logger(__name__)
 

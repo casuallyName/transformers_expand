@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# @Time     : 2022/11/26 16:27
-# @File     : modeling_roformer.py
+# @Time     : 2022/11/26 16:57
+# @File     : modeling_squeezebert.py
 # @Author   : Zhou Hang
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
@@ -9,34 +9,30 @@
 from typing import Optional, Tuple, Union
 
 import torch
-import torch.utils.checkpoint
 from torch import nn
-
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    CausalLMOutputWithCrossAttentions,
+    BaseModelOutput,
+    BaseModelOutputWithPooling,
     MaskedLMOutput,
     MultipleChoiceModelOutput,
     QuestionAnsweringModelOutput,
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.utils import (
-    add_code_sample_docstrings,
-    add_start_docstrings,
-    add_start_docstrings_to_model_forward,
-    logging,
-    replace_return_docstrings,
-)
-from transformers.models.roformer.modeling_roformer import (
-    ROFORMER_START_DOCSTRING,
-    ROFORMER_INPUTS_DOCSTRING,
+
+from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
+    logging
+
+from transformers.models.squeezebert.modeling_squeezebert import (
+    SQUEEZEBERT_START_DOCSTRING,
+
     _TOKENIZER_FOR_DOC,
     _CHECKPOINT_FOR_DOC,
     _CONFIG_FOR_DOC,
+    SQUEEZEBERT_INPUTS_DOCSTRING,
 
-    RoFormerPreTrainedModel,
-    RoFormerModel
+    SqueezeBertPreTrainedModel,
+    SqueezeBertModel,
 )
 
 from ...nn import (
@@ -52,16 +48,17 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    RoFormer Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    SqueezeBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) e.g.
+    for Named-Entity-Recognition (NER) tasks.
     """,
-    ROFORMER_START_DOCSTRING,
+    SQUEEZEBERT_START_DOCSTRING,
 )
-class RoFormerForTokenClassificationWithBiaffine(RoFormerPreTrainedModel):
+class SqueezeBertForTokenClassificationWithBiaffine(SqueezeBertPreTrainedModel):
     def __init__(self, config, biaffine_input_size: int = None, use_lstm: bool = None):
         super().__init__(config)
         # 此处 +1 操作是由于实体标签类别中含有一个 "非实体" 类别，即label map中的 0
         self.num_labels = config.num_labels + 1
+
         if use_lstm is not None and hasattr(config, 'use_lstm') and config.use_lstm != use_lstm:
             logger.warning(
                 f"Parameter conflict, user set use_lstm is {use_lstm}, but config.use_lstm is {config.use_lstm}. "
@@ -80,7 +77,7 @@ class RoFormerForTokenClassificationWithBiaffine(RoFormerPreTrainedModel):
         self.use_lstm = config.use_lstm
         self.biaffine_input_size = config.biaffine_input_size
 
-        self.roformer = RoFormerModel(config)
+        self.transformer = SqueezeBertModel(config)
 
         if self.use_lstm:
             self.lstm = torch.nn.LSTM(input_size=768,
@@ -105,10 +102,11 @@ class RoFormerForTokenClassificationWithBiaffine(RoFormerPreTrainedModel):
                 torch.nn.ReLU())
 
         self.biaffne_layer = Biaffine(self.biaffine_input_size, self.num_labels)
+
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(ROFORMER_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(SQUEEZEBERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
         checkpoint=_CHECKPOINT_FOR_DOC,
@@ -119,27 +117,29 @@ class RoFormerForTokenClassificationWithBiaffine(RoFormerPreTrainedModel):
     )
     def forward(
             self,
-            input_ids: Optional[torch.LongTensor] = None,
-            attention_mask: Optional[torch.FloatTensor] = None,
-            token_type_ids: Optional[torch.LongTensor] = None,
-            head_mask: Optional[torch.FloatTensor] = None,
-            inputs_embeds: Optional[torch.FloatTensor] = None,
-            labels: Optional[torch.LongTensor] = None,
+            input_ids: Optional[torch.Tensor] = None,
+            attention_mask: Optional[torch.Tensor] = None,
+            token_type_ids: Optional[torch.Tensor] = None,
+            position_ids: Optional[torch.Tensor] = None,
+            head_mask: Optional[torch.Tensor] = None,
+            inputs_embeds: Optional[torch.Tensor] = None,
+            labels: Optional[torch.Tensor] = None,
             sequence_mask: Optional[torch.Tensor] = None,
             output_attentions: Optional[bool] = None,
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
-    ) -> Union[TokenClassifierOutput, Tuple[torch.Tensor]]:
+    ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        outputs = self.roformer(
+        outputs = self.transformer(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
+            position_ids=position_ids,
             head_mask=head_mask,
             inputs_embeds=inputs_embeds,
             output_attentions=output_attentions,
@@ -179,17 +179,17 @@ class RoFormerForTokenClassificationWithBiaffine(RoFormerPreTrainedModel):
 
 @add_start_docstrings(
     """
-    RoFormer Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    SqueezeBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g.
+    for Named-Entity-Recognition (NER) tasks.
     """,
-    ROFORMER_START_DOCSTRING,
+    SQUEEZEBERT_START_DOCSTRING,
 )
-class RoFormerForTokenClassificationWithGlobalPointer(RoFormerPreTrainedModel):
+class SqueezeBertForTokenClassificationWithGlobalPointer(SqueezeBertPreTrainedModel):
     def __init__(self, config, inner_dim: int = None, use_efficient: bool = None):
         super().__init__(config)
         self.num_labels = config.num_labels
 
-        self.roformer = RoFormerModel(config)
+        self.transformer = SqueezeBertModel(config)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
@@ -222,7 +222,7 @@ class RoFormerForTokenClassificationWithGlobalPointer(RoFormerPreTrainedModel):
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(ROFORMER_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(SQUEEZEBERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
         checkpoint=_CHECKPOINT_FOR_DOC,
@@ -233,26 +233,28 @@ class RoFormerForTokenClassificationWithGlobalPointer(RoFormerPreTrainedModel):
     )
     def forward(
             self,
-            input_ids: Optional[torch.LongTensor] = None,
-            attention_mask: Optional[torch.FloatTensor] = None,
-            token_type_ids: Optional[torch.LongTensor] = None,
-            head_mask: Optional[torch.FloatTensor] = None,
-            inputs_embeds: Optional[torch.FloatTensor] = None,
-            labels: Optional[torch.LongTensor] = None,
+            input_ids: Optional[torch.Tensor] = None,
+            attention_mask: Optional[torch.Tensor] = None,
+            token_type_ids: Optional[torch.Tensor] = None,
+            position_ids: Optional[torch.Tensor] = None,
+            head_mask: Optional[torch.Tensor] = None,
+            inputs_embeds: Optional[torch.Tensor] = None,
+            labels: Optional[torch.Tensor] = None,
             output_attentions: Optional[bool] = None,
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
-    ) -> Union[TokenClassifierOutput, Tuple[torch.Tensor]]:
+    ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        outputs = self.roformer(
+        outputs = self.transformer(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
+            position_ids=position_ids,
             head_mask=head_mask,
             inputs_embeds=inputs_embeds,
             output_attentions=output_attentions,

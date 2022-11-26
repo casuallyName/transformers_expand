@@ -39,6 +39,7 @@ _import_structure = {
     "models.roberta": [],
 
 "models.roformer": [],
+    "models.squeezebert":[],
     "nn": ["functional",
            "layer",
            "modules",
@@ -177,6 +178,11 @@ else:
         "RoFormerForTokenClassificationWithGlobalPointer",
     ]
 
+    _import_structure["models.squeezebert"] = [
+        "SqueezeBertForTokenClassificationWithBiaffine",
+        "SqueezeBertForTokenClassificationWithGlobalPointer",
+    ]
+
 
 
 
@@ -273,6 +279,10 @@ if TYPE_CHECKING:
         from .models.roformer import (
             RoFormerForTokenClassificationWithBiaffine,
             RoFormerForTokenClassificationWithGlobalPointer,
+        )
+        from .models.squeezebert import (
+            SqueezeBertForTokenClassificationWithBiaffine,
+            SqueezeBertForTokenClassificationWithGlobalPointer,
         )
 
         from .nn import (
