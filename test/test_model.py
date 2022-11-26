@@ -84,7 +84,7 @@ def forward_func_for_global_pointer(model, tokenizer):
 def check_model(model_list, end, auto_name, forward_func):
     res = []
     for model_name, model_obj_name in model_list:
-        print(f'Test {model_name} ...')
+        print(f'Test {model_obj_name} ...')
         model_ckp_list, model_1, model_2 = get_checkpoint_name(model_name=model_name,
                                                                model_obj_name=model_obj_name,
                                                                end=end,
