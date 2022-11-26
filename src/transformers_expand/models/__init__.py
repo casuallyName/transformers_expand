@@ -19,4 +19,5 @@ from . import (
     roformer,
     squeezebert,
     xlm,
+    xlm_roberta,
 )
