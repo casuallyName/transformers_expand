@@ -91,7 +91,7 @@ def check_model(model_list, end, auto_name, forward_func):
         if model_ckp_list is None:
             # res[model_name] = f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m'
             # print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
-            res.append(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
+            res.append(f'{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
@@ -105,12 +105,12 @@ def check_model(model_list, end, auto_name, forward_func):
                     loss_2 = forward_func(model_2, tokenizer)
                     # print(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m'
-                    res.append(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
+                    res.append(f'{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     break
                 except:
                     # print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m'
-                    res.append(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
+                    res.append(f'{model_name:<20}: \033[31m ✘ 错误\033[30m')
                     print(traceback.print_exc())
     return res
 
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
     result = {}
-
+    print('Testing ...')
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
                                      auto_name='AutoModelForTokenClassificationWithBiaffine',
@@ -130,8 +130,9 @@ if __name__ == '__main__':
                                           auto_name='AutoModelForTokenClassificationWithGlobalPointer',
                                           forward_func=forward_func_for_global_pointer)
 
+    print('Result:')
     for name, res in result.items():
-        print(f'{name} Models"')
+        print(f'\t{name} Models')
         for i in res:
-            print(i)
+            print(f'\t\t{i}')
         print()
