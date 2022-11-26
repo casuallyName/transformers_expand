@@ -82,13 +82,16 @@ def forward_func_for_global_pointer(model, tokenizer):
 
 
 def check_model(model_list, end, auto_name, forward_func):
+    res = []
     for model_name, model_obj_name in model_list:
         model_ckp_list, model_1, model_2 = get_checkpoint_name(model_name=model_name,
                                                                model_obj_name=model_obj_name,
                                                                end=end,
                                                                auto_name=auto_name)
         if model_ckp_list is None:
-            print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
+            # res[model_name] = f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m'
+            # print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
+            res.append(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
@@ -100,25 +103,35 @@ def check_model(model_list, end, auto_name, forward_func):
                     )
                     loss_1 = forward_func(model_1, tokenizer)
                     loss_2 = forward_func(model_2, tokenizer)
-                    print(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
+                    # print(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
+                    # res[model_name] = f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m'
+                    res.append(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     break
                 except:
-                    print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
+                    # print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
+                    # res[model_name] = f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m'
+                    res.append(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
                     print(traceback.print_exc())
+    return res
 
 
 if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
-    print('Biaffine Models:')
-    check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
-                end='WithBiaffine',
-                auto_name='AutoModelForTokenClassificationWithBiaffine',
-                forward_func=forward_func_for_biaffine)
+    result = {}
 
-    print('-' * 100)
-    print('GlobalPointer Models:')
-    check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
-                end='WithGlobalPointer',
-                auto_name='AutoModelForTokenClassificationWithGlobalPointer',
-                forward_func=forward_func_for_global_pointer)
+    result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
+                                     end='WithBiaffine',
+                                     auto_name='AutoModelForTokenClassificationWithBiaffine',
+                                     forward_func=forward_func_for_biaffine)
+
+    result['GlobalPointer'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
+                                          end='WithGlobalPointer',
+                                          auto_name='AutoModelForTokenClassificationWithGlobalPointer',
+                                          forward_func=forward_func_for_global_pointer)
+
+    for name, res in result.items():
+        print(f'{name} Models"')
+        for i in res:
+            print(i)
+        print()
