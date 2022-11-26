@@ -91,7 +91,8 @@ def check_model(model_list, end, auto_name, forward_func):
         if model_ckp_list is None:
             # res[model_name] = f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m'
             # print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
-            res.append(f'{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
+            # res.append(f'{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
+            res.append(f'{model_name:<20}: \033[31m ✘ 错误\033[30m')
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
