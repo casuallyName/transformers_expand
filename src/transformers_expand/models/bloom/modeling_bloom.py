@@ -17,10 +17,10 @@ from torch import nn
 from transformers.file_utils import add_code_sample_docstrings, add_start_docstrings, \
     add_start_docstrings_to_model_forward
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    CausalLMOutputWithCrossAttentions,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutputWithPast,
+    # BaseModelOutputWithPastAndCrossAttentions,
+    # CausalLMOutputWithCrossAttentions,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutputWithPast,
     TokenClassifierOutput,
 )
 from transformers.utils import logging
