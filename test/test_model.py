@@ -136,7 +136,7 @@ if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
     result = {}
-    pass_list = ['xlm-roberta-xl']
+    pass_list = ['xlm-roberta-xl','gpt2']
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
                                      auto_name='AutoModelForTokenClassificationWithBiaffine',
