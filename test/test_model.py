@@ -136,7 +136,8 @@ if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
     result = {}
-    pass_list = ['xlm-roberta-xl','gpt2'
+    pass_list = ['xlm-roberta-xl',
+                 'gpt2',
                  'layoutlm',
                  'layoutlmv2',
                  'layoutlmv3',
