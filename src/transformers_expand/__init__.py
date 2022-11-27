@@ -36,8 +36,13 @@ _import_structure = {
     "models.deberta_v2": [],
     "models.electra": [],
     "models.ernie": [],
+    "models.esm": [],
+    "models.flaubert": [],
+    "models.fnet": [],
+    "models.funnel": [],
+    "models.gpt2": [],
+    # TODO
     "models.roberta": [],
-
     "models.roformer": [],
     "models.squeezebert": [],
     "models.xlm": [],
@@ -116,7 +121,6 @@ else:
             "BigBirdForTokenClassificationWithGlobalPointer",
         ]
     )
-
     _import_structure["models.bloom"].extend(
         [
             "BloomForTokenClassificationWithBiaffine",
@@ -129,7 +133,6 @@ else:
             "CamembertForTokenClassificationWithGlobalPointer"
         ]
     )
-
     _import_structure["models.canine"] = [
         "CanineForTokenClassificationWithBiaffine",
         "CanineForTokenClassificationWithGlobalPointer"
@@ -174,6 +177,37 @@ else:
             "ErnieForTokenClassificationWithBiaffine",
         ]
     )
+    _import_structure["models.esm"].extend(
+        [
+            "EsmForTokenClassificationWithBiaffine",
+            "EsmForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.flaubert"].extend(
+        [
+            "FlaubertForTokenClassificationWithBiaffine",
+            "FlaubertForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.fnet"].extend(
+        [
+            "FNetForTokenClassificationWithBiaffine",
+            "FNetForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.funnel"].extend(
+        [
+            "FunnelForTokenClassificationWithBiaffine",
+            "FunnelForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.gpt2"].extend(
+        [
+            "GPT2ForTokenClassificationWithBiaffine",
+            "GPT2ForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    # TODO
     _import_structure["models.roberta"] = [
         "RobertaForTokenClassificationWithBiaffine",
         "RobertaForTokenClassificationWithGlobalPointer",
@@ -296,6 +330,27 @@ if TYPE_CHECKING:
             ErnieForTokenClassificationWithBiaffine,
             ErnieForTokenClassificationWithGlobalPointer,
         )
+        from .models.esm import (
+            EsmForTokenClassificationWithBiaffine,
+            EsmForTokenClassificationWithGlobalPointer,
+        )
+        from .models.flaubert import (
+            FlaubertForTokenClassificationWithBiaffine,
+            FlaubertForTokenClassificationWithGlobalPointer
+        )
+        from .models.fnet import (
+            FNetForTokenClassificationWithBiaffine,
+            FNetForTokenClassificationWithGlobalPointer,
+        )
+        from .models.funnel import (
+            FunnelForTokenClassificationWithBiaffine,
+            FunnelForTokenClassificationWithGlobalPointer,
+        )
+        from .models.gpt2 import (
+            GPT2ForTokenClassificationWithBiaffine,
+            GPT2ForTokenClassificationWithGlobalPointer,
+        )
+        # TODO
         from .models.roberta import (
             RobertaForTokenClassificationWithBiaffine,
             RobertaForTokenClassificationWithGlobalPointer,
