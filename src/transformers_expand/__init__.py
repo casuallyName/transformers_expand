@@ -207,6 +207,68 @@ else:
             "GPT2ForTokenClassificationWithGlobalPointer",
         ]
     )
+    _import_structure["models.ibert"].extend(
+        [
+            "IBertForTokenClassificationWithBiaffine",
+            "IBertForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.layoutlm"].extend(
+        [
+            "LayoutLMForTokenClassificationWithBiaffine",
+            "LayoutLMForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.layoutlmv2"].extend(
+        [
+            "LayoutLMv2ForTokenClassificationWithBiaffine",
+            "LayoutLMv2ForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.layoutlmv3"].extend(
+        [
+            "LayoutLMv3ForTokenClassificationWithBiaffine",
+            "LayoutLMv3ForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.longformer"].extend(
+        [
+            "LongformerForTokenClassificationWithBiaffine",
+            "LongformerForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.luke"].extend(
+        [
+            "LukeForTokenClassificationWithBiaffine",
+            "LukeForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.markuplm"].extend(
+        [
+            "MarkupLMForTokenClassificationWithBiaffine",
+            "MarkupLMForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.mobilebert"].extend(
+        [
+            "MobileBertForTokenClassificationWithBiaffine",
+            "MobileBertForTokenClassificationWithGlobalPointer",
+        ]
+    )
+
+    _import_structure["models.mpnet"].extend(
+        [
+            "MPNetForTokenClassificationithBiaffine",
+            "MPNetForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.nezha"].extend(
+        [
+            "NezhaForTokenClassificatioWithBiaffinen",
+            "NezhaForTokenClassificationWithGlobalPointer",
+        ]
+    )
+
     # TODO
     _import_structure["models.roberta"] = [
         "RobertaForTokenClassificationWithBiaffine",
@@ -350,6 +412,51 @@ if TYPE_CHECKING:
             GPT2ForTokenClassificationWithBiaffine,
             GPT2ForTokenClassificationWithGlobalPointer,
         )
+        from .models.ibert import (
+            IBertForTokenClassificationWithGlobalPointer,
+            IBertForTokenClassificationWithBiaffine,
+        )
+        from .models.layoutlm import (
+            LayoutLMForTokenClassificationWithBiaffine,
+            LayoutLMForTokenClassificationWithGlobalPointer
+        )
+        from .models.layoutlmv2 import (
+            LayoutLMv2ForTokenClassificationWithBiaffine,
+            LayoutLMv2ForTokenClassificationWithGlobalPointer,
+        )
+        from .models.layoutlmv3 import (
+            LayoutLMv3ForTokenClassificationWithBiaffine,
+            LayoutLMv3ForTokenClassificationWithGlobalPointer,
+        )
+        from .models.longformer import (
+            LongformerForTokenClassificationWithBiaffine,
+            LongformerForTokenClassificationWithGlobalPointer,
+        )
+        from .models.luke import (
+            LukeForTokenClassificationWithBiaffine,
+            LukeForTokenClassificationWithGlobalPointer,
+        )
+        from .models.markuplm import (
+            MarkupLMForTokenClassificationWithBiaffine,
+            MarkupLMForTokenClassificationWithGlobalPointer,
+        )
+        from .models.megatron_bert import (
+            MegatronBertForTokenClassificationWithBiaffine,
+            MegatronBertForTokenClassificationWithGlobalPointer,
+        )
+        from .models.mobilebert import (
+            MobileBertForTokenClassificationWithBiaffine,
+            MobileBertForTokenClassificationWithGlobalPointer,
+        )
+        from .models.mpnet import (
+            MPNetForTokenClassificationithBiaffine,
+            MPNetForTokenClassificationWithGlobalPointer,
+        )
+        from .models.nezha import (
+            NezhaForTokenClassificatioWithBiaffinen,
+            NezhaForTokenClassificationWithGlobalPointer,
+        )
+
         # TODO
         from .models.roberta import (
             RobertaForTokenClassificationWithBiaffine,

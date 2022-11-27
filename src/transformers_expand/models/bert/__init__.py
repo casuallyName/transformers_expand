@@ -15,8 +15,8 @@ except OptionalDependencyNotAvailable:
     pass
 else:
     _import_structure["modeling_bert"] = [
-        "BertForTokenClassificationWithGlobalPointer",
         "BertForTokenClassificationWithBiaffine"
+        "BertForTokenClassificationWithGlobalPointer",
     ]
 
 if TYPE_CHECKING:
@@ -28,8 +28,8 @@ if TYPE_CHECKING:
         pass
     else:
         from .modeling_bert import (
-            BertForTokenClassificationWithGlobalPointer,
             BertForTokenClassificationWithBiaffine,
+            BertForTokenClassificationWithGlobalPointer,
         )
 else:
     import sys
