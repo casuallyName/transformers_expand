@@ -129,7 +129,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
                 except:
                     # print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m'
-                    res.append(f'{model_name:<20}: \033[31m ✘ 错误\033[30m')
+                    res.append(f'{model_name:<20}: \033[31m ✘ 错误\n{traceback.format_tb()}\033[30m')
                     print(traceback.print_exc())
     return res
 
