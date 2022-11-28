@@ -15,7 +15,7 @@ except OptionalDependencyNotAvailable:
     pass
 else:
     _import_structure["modeling_bert"] = [
-        "BertForTokenClassificationWithBiaffine"
+        "BertForTokenClassificationWithBiaffine",
         "BertForTokenClassificationWithGlobalPointer",
     ]
 
