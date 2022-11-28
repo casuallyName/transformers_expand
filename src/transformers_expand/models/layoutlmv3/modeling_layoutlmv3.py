@@ -125,6 +125,14 @@ class LayoutLMv3ForTokenClassificationWithBiaffine(LayoutLMv3PreTrainedModel):
             return_dict=None,
             pixel_values=None,
     ):
+        r"""
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+
+        Returns:
+
+        Examples:
+        """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
         outputs = self.layoutlmv3(
@@ -140,6 +148,7 @@ class LayoutLMv3ForTokenClassificationWithBiaffine(LayoutLMv3PreTrainedModel):
             return_dict=return_dict,
             pixel_values=pixel_values,
         )
+
         if input_ids is not None:
             input_shape = input_ids.size()
         else:
@@ -249,26 +258,7 @@ class LayoutLMv3ForTokenClassificationWithGlobalPointer(LayoutLMv3PreTrainedMode
 
         Examples:
 
-        ```python
-        >>> from src.transformers import AutoProcessor, AutoModelForTokenClassification
-        >>> from datasets import load_dataset
-
-        >>> processor = AutoProcessor.from_pretrained("microsoft/layoutlmv3-base", apply_ocr=False)
-        >>> model = AutoModelForTokenClassification.from_pretrained("microsoft/layoutlmv3-base", num_labels=7)
-
-        >>> dataset = load_dataset("nielsr/funsd-layoutlmv3", split="train")
-        >>> example = dataset[0]
-        >>> image = example["image"]
-        >>> words = example["tokens"]
-        >>> boxes = example["bboxes"]
-        >>> word_labels = example["ner_tags"]
-
-        >>> encoding = processor(image, words, boxes=boxes, word_labels=word_labels, return_tensors="pt")
-
-        >>> outputs = model(**encoding)
-        >>> loss = outputs.loss
-        >>> logits = outputs.logits
-        ```"""
+        """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
         outputs = self.layoutlmv3(
