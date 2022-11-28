@@ -69,7 +69,7 @@ def forward_func_for_biaffine(model, tokenizer):
     inputs['labels'] = torch.tensor([span_label])
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
-    inputs = {k:v.to(device)for k,v in inputs.items()}
+    inputs = {k: v.to(device) for k, v in inputs.items()}
     loss = model(**inputs).loss
     return loss
 
@@ -90,7 +90,7 @@ def forward_func_for_global_pointer(model, tokenizer):
     return loss
 
 
-def check_model(model_list, end, auto_name, forward_func,pass_list = None):
+def check_model(model_list, end, auto_name, forward_func, pass_list=None):
     res = []
     if pass_list is None:
         pass_list = []
@@ -145,15 +145,14 @@ if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
     result = {}
-    pass_list = ['xlm-roberta-xl',
+    pass_list = ['xlm-roberta-xl',  # 太大跳过测试
                  'gpt2',
                  'layoutlm',
                  # 'layoutlmv2',
                  # 'layoutlmv3',
                  # 'markuplm',
                  'nezha',
-                 # 不支持
-                 'fnet',
+                 'fnet',  # 不支持attention_mask
 
                  ]
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
