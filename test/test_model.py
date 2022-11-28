@@ -97,7 +97,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
         if model_name in pass_list:
             res.append(f'{model_name:<20}: \033[34m - 跳过测试\033[30m')
             continue
-        print(f'Test {model_obj_name}{end} ...')
+        print(f'Test {model_obj_name}{end} ... ',end='')
         model_ckp_list, model_1, model_2 = get_checkpoint_name(model_name=model_name,
                                                                model_obj_name=model_obj_name,
                                                                end=end,
@@ -107,6 +107,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
             # print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
             # res.append(f'{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
             res.append(f'{model_name:<20}: \033[31m ✘ 错误 (未定义模型或导入失败) \033[30m')
+            print('End')
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
@@ -128,7 +129,8 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
                     # print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m'
                     res.append(f'{model_name:<20}: \033[31m ✘ 错误\n{traceback.format_exc()}\033[30m')
-                    print(traceback.print_exc())
+                    # print(traceback.print_exc())
+            print('End')
     return res
 
 
@@ -141,6 +143,7 @@ if __name__ == '__main__':
                  'layoutlm',
                  'layoutlmv2',
                  'layoutlmv3',
+                 'markuplm',
                  ]
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
