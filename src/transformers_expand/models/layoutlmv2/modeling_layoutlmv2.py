@@ -129,6 +129,14 @@ class LayoutLMv2ForTokenClassificationWithBiaffine(LayoutLMv2PreTrainedModel):
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
+        r"""
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+
+        Returns:
+
+        Example:
+        """
 
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -230,7 +238,6 @@ class LayoutLMv2ForTokenClassificationWithGlobalPointer(LayoutLMv2PreTrainedMode
         return self.layoutlmv2.embeddings.word_embeddings
 
     @add_start_docstrings_to_model_forward(LAYOUTLMV2_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
-    @replace_return_docstrings(output_type=TokenClassifierOutput, config_class=_CONFIG_FOR_DOC)
     def forward(
             self,
             input_ids: Optional[torch.LongTensor] = None,
@@ -246,6 +253,14 @@ class LayoutLMv2ForTokenClassificationWithGlobalPointer(LayoutLMv2PreTrainedMode
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
+        r"""
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+
+        Returns:
+
+        Example:
+        """
 
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 

@@ -126,6 +126,10 @@ class LayoutLMForTokenClassificationWithBiaffine(LayoutLMPreTrainedModel):
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+
+        Returns:
+
+        Examples:
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -238,6 +242,9 @@ class LayoutLMForTokenClassificationWithGlobalPointer(LayoutLMPreTrainedModel):
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
 
+        Returns:
+
+        Examples:
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
