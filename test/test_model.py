@@ -26,20 +26,14 @@ print(transformers_expand.__version__)
 
 def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
     model_name = model_name.replace('-', '_')
-    if model_name == 'data2vec_text':
-        name = 'data2vec'
-        modeling_name = 'modeling_' + model_name
-    elif model_name == '':
-        name = 'microsoft/layoutlm-base-uncased'
-        modeling_name = 'modeling_' + model_name
-    else:
-        name = model_name
-        modeling_name = 'modeling_' + model_name
+    modeling_name = 'modeling_' + model_name
     print(model_obj_name + end)
     if hasattr(transformers_expand, model_obj_name + end):
         try:
             model_ckp_list = getattr(getattr(getattr(getattr(transformers, 'models'), name), modeling_name),
                                      model_name.upper() + '_PRETRAINED_MODEL_ARCHIVE_LIST')
+            if model_name == 'layoutlm':
+                model_ckp_list = ['microsoft/'+i for i in model_ckp_list]
             model_1 = getattr(transformers_expand, model_obj_name + end)
             model_2 = getattr(transformers_expand, auto_name)
             return model_ckp_list, model_1, model_2
