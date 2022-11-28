@@ -41,9 +41,6 @@ _import_structure = {
     "models.funnel": [],
     "models.gpt2": [],
     "models.ibert": [],
-    "models.layoutlm": [],
-    "models.layoutlmv2": [],
-    "models.layoutlmv3": [],
     "models.longformer": [],
     "models.luke": [],
     "models.markuplm": [],
@@ -215,24 +212,6 @@ else:
         [
             "IBertForTokenClassificationWithBiaffine",
             "IBertForTokenClassificationWithGlobalPointer",
-        ]
-    )
-    _import_structure["models.layoutlm"].extend(
-        [
-            "LayoutLMForTokenClassificationWithBiaffine",
-            "LayoutLMForTokenClassificationWithGlobalPointer",
-        ]
-    )
-    _import_structure["models.layoutlmv2"].extend(
-        [
-            "LayoutLMv2ForTokenClassificationWithBiaffine",
-            "LayoutLMv2ForTokenClassificationWithGlobalPointer",
-        ]
-    )
-    _import_structure["models.layoutlmv3"].extend(
-        [
-            "LayoutLMv3ForTokenClassificationWithBiaffine",
-            "LayoutLMv3ForTokenClassificationWithGlobalPointer",
         ]
     )
     _import_structure["models.longformer"].extend(
@@ -415,18 +394,6 @@ if TYPE_CHECKING:
         from .models.ibert import (
             IBertForTokenClassificationWithGlobalPointer,
             IBertForTokenClassificationWithBiaffine,
-        )
-        from .models.layoutlm import (
-            LayoutLMForTokenClassificationWithBiaffine,
-            LayoutLMForTokenClassificationWithGlobalPointer
-        )
-        from .models.layoutlmv2 import (
-            LayoutLMv2ForTokenClassificationWithBiaffine,
-            LayoutLMv2ForTokenClassificationWithGlobalPointer,
-        )
-        from .models.layoutlmv3 import (
-            LayoutLMv3ForTokenClassificationWithBiaffine,
-            LayoutLMv3ForTokenClassificationWithGlobalPointer,
         )
         from .models.longformer import (
             LongformerForTokenClassificationWithBiaffine,

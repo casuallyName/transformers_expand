@@ -160,12 +160,12 @@ if __name__ == '__main__':
 
     result = {}
     pass_list = ['xlm-roberta-xl',  # 太大跳过测试
-                 'gpt2',
-                 # 'layoutlm',
-                 # 'layoutlmv2',
-                 # 'layoutlmv3',
+                 'gpt2',# 太大跳过测试
+                 'layoutlm', # 不合适
+                 'layoutlmv2',# 不合适
+                 'layoutlmv3',# 不合适
                  # 'markuplm',
-                 'nezha',
+                 # 'nezha',
                  'fnet',  # 不支持attention_mask
 
                  ]
