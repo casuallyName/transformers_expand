@@ -103,6 +103,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
                                                                model_obj_name=model_obj_name,
                                                                end=end,
                                                                auto_name=auto_name)
+        print('\n\n\n')
         if model_ckp_list is None:
             # res[model_name] = f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m'
             # print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
