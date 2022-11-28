@@ -15,7 +15,6 @@ from . import (
     ernie,
     esm,
     flaubert,
-    fnet,
     funnel,
     gpt2,
     ibert,

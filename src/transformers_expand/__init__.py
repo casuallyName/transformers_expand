@@ -38,7 +38,6 @@ _import_structure = {
     "models.ernie": [],
     "models.esm": [],
     "models.flaubert": [],
-    "models.fnet": [],
     "models.funnel": [],
     "models.gpt2": [],
     "models.ibert": [],
@@ -198,12 +197,6 @@ else:
         [
             "FlaubertForTokenClassificationWithBiaffine",
             "FlaubertForTokenClassificationWithGlobalPointer",
-        ]
-    )
-    _import_structure["models.fnet"].extend(
-        [
-            "FNetForTokenClassificationWithBiaffine",
-            "FNetForTokenClassificationWithGlobalPointer",
         ]
     )
     _import_structure["models.funnel"].extend(
@@ -410,10 +403,6 @@ if TYPE_CHECKING:
         from .models.flaubert import (
             FlaubertForTokenClassificationWithBiaffine,
             FlaubertForTokenClassificationWithGlobalPointer
-        )
-        from .models.fnet import (
-            FNetForTokenClassificationWithBiaffine,
-            FNetForTokenClassificationWithGlobalPointer,
         )
         from .models.funnel import (
             FunnelForTokenClassificationWithBiaffine,
