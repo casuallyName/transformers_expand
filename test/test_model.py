@@ -144,6 +144,7 @@ if __name__ == '__main__':
                  'layoutlmv2',
                  'layoutlmv3',
                  'markuplm',
+                 'nezha'
                  ]
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
