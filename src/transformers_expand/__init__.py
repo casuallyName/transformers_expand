@@ -247,7 +247,7 @@ else:
     )
     _import_structure["models.nezha"].extend(
         [
-            "NezhaForTokenClassificatioWithBiaffinen",
+            "NezhaForTokenClassificationWithBiaffine",
             "NezhaForTokenClassificationWithGlobalPointer",
         ]
     )
@@ -420,7 +420,7 @@ if TYPE_CHECKING:
             MPNetForTokenClassificationWithGlobalPointer,
         )
         from .models.nezha import (
-            NezhaForTokenClassificatioWithBiaffinen,
+            NezhaForTokenClassificationWithBiaffine,
             NezhaForTokenClassificationWithGlobalPointer,
         )
 

@@ -22,7 +22,7 @@ except OptionalDependencyNotAvailable:
     pass
 else:
     _import_structure["modeling_nezha"] = [
-        "NezhaForTokenClassificatioWithBiaffinen",
+        "NezhaForTokenClassificationWithBiaffine",
         "NezhaForTokenClassificationWithGlobalPointer",
     ]
 
@@ -35,7 +35,7 @@ if TYPE_CHECKING:
         pass
     else:
         from .modeling_nezha import (
-            NezhaForTokenClassificatioWithBiaffinen,
+            NezhaForTokenClassificationWithBiaffine,
             NezhaForTokenClassificationWithGlobalPointer,
         )
 else:

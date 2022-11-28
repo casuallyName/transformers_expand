@@ -56,7 +56,7 @@ logger = logging.get_logger(__name__)
     """,
     NEZHA_START_DOCSTRING,
 )
-class NezhaForTokenClassificatioWithBiaffinen(NezhaPreTrainedModel):
+class NezhaForTokenClassificationWithBiaffine(NezhaPreTrainedModel):
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
 
     def __init__(self, config, biaffine_input_size: int = None, use_lstm: bool = None):
@@ -119,8 +119,8 @@ class NezhaForTokenClassificatioWithBiaffinen(NezhaPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
-        expected_loss=0.01,
+        # expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        # expected_loss=0.01,
     )
     def forward(
             self,
