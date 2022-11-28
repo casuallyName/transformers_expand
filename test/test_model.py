@@ -96,7 +96,7 @@ def forward_func_for_global_pointer(model, tokenizer):
                            padding='max_length',
                            return_tensors='pt'
                            )
-    inputs['labels'] = torch.zeros(size=(1, 2, 10, 10))
+    inputs['labels'] = torch.zeros(size=(1, 2, max_length, max_length))
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     inputs = {k: v.to(device) for k, v in inputs.items()}
@@ -140,18 +140,17 @@ def check_model(model_list, end, auto_name, forward_func, pass_list=None):
                     # print(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m'
                     res.append(f'{model_name:<20}: \033[32m ✔ 通过\033[30m')
-                    break
                 except NameError as e:
                     if 'attention_mask' in e:
                         res.append(f'{model_name:<20}: \033[31m ✘ 不支持此模型\033[30m')
                     else:
                         res.append(f'{model_name:<20}: \033[31m ✘ 错误\n{traceback.format_exc()}\033[30m')
-                    break
                 except:
                     # print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m'
                     res.append(f'{model_name:<20}: \033[31m ✘ 错误\n{traceback.format_exc()}\033[30m')
                     # print(traceback.print_exc())
+                else:
                     break
             print(f'Test {model_obj_name}{end} End')
     return res
