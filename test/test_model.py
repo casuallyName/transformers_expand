@@ -146,10 +146,13 @@ if __name__ == '__main__':
     pass_list = ['xlm-roberta-xl',
                  'gpt2',
                  'layoutlm',
-                 'layoutlmv2',
-                 'layoutlmv3',
-                 'markuplm',
-                 'nezha'
+                 # 'layoutlmv2',
+                 # 'layoutlmv3',
+                 # 'markuplm',
+                 'nezha',
+                 # 不支持
+                 'fnet',
+
                  ]
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
