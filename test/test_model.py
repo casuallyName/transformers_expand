@@ -125,7 +125,6 @@ def check_model(model_list, end, auto_name, forward_func, pass_list=None):
             print(f'Test {model_obj_name}{end} End')
         else:
             for pretrained_model_name_or_path in model_ckp_list:
-                print(os.system('free -g'))
                 try:
                     tokenizer = transformers.AutoTokenizer.from_pretrained(
                         pretrained_model_name_or_path=pretrained_model_name_or_path,
