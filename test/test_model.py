@@ -107,7 +107,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
             # print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
             # res.append(f'{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
             res.append(f'{model_name:<20}: \033[31m ✘ 错误 (未定义模型或导入失败) \033[30m')
-            print(f'Test {model_obj_name}{end} End', end='')
+            print(f'Test {model_obj_name}{end} End')
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
@@ -135,7 +135,7 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
                     # res[model_name] = f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m'
                     res.append(f'{model_name:<20}: \033[31m ✘ 错误\n{traceback.format_exc()}\033[30m')
                     # print(traceback.print_exc())
-            print('End')
+            print(f'Test {model_obj_name}{end} End')
     return res
 
 
