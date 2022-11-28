@@ -125,6 +125,11 @@ def check_model(model_list, end, auto_name, forward_func,pass_list = None):
                     # res[model_name] = f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m'
                     res.append(f'{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     break
+                except NameError as e:
+                    if 'attention_mask' in e:
+                        res.append(f'{model_name:<20}: \033[31m ✘ 不支持此模型\033[30m')
+                    else:
+                        res.append(f'{model_name:<20}: \033[31m ✘ 错误\n{traceback.format_exc()}\033[30m')
                 except:
                     # print(f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[31m ✘ 错误\033[30m'
