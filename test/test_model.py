@@ -30,7 +30,7 @@ def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
     print(model_obj_name + end)
     if hasattr(transformers_expand, model_obj_name + end):
         try:
-            model_ckp_list = getattr(getattr(getattr(getattr(transformers, 'models'), name), modeling_name),
+            model_ckp_list = getattr(getattr(getattr(getattr(transformers, 'models'), model_name), modeling_name),
                                      model_name.upper() + '_PRETRAINED_MODEL_ARCHIVE_LIST')
             if model_name == 'layoutlm':
                 model_ckp_list = ['microsoft/'+i for i in model_ckp_list]
