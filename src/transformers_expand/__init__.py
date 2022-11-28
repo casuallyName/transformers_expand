@@ -43,7 +43,6 @@ _import_structure = {
     "models.ibert": [],
     "models.longformer": [],
     "models.luke": [],
-    "models.markuplm": [],
     "models.megatron_bert": [],
     "models.mobilebert": [],
     "models.mpnet": [],
@@ -226,12 +225,6 @@ else:
             "LukeForTokenClassificationWithGlobalPointer",
         ]
     )
-    _import_structure["models.markuplm"].extend(
-        [
-            "MarkupLMForTokenClassificationWithBiaffine",
-            "MarkupLMForTokenClassificationWithGlobalPointer",
-        ]
-    )
     _import_structure["models.mobilebert"].extend(
         [
             "MobileBertForTokenClassificationWithBiaffine",
@@ -402,10 +395,6 @@ if TYPE_CHECKING:
         from .models.luke import (
             LukeForTokenClassificationWithBiaffine,
             LukeForTokenClassificationWithGlobalPointer,
-        )
-        from .models.markuplm import (
-            MarkupLMForTokenClassificationWithBiaffine,
-            MarkupLMForTokenClassificationWithGlobalPointer,
         )
         from .models.megatron_bert import (
             MegatronBertForTokenClassificationWithBiaffine,

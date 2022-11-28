@@ -31,7 +31,6 @@ def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
     else:
         name = model_name
     modeling_name = 'modeling_' + model_name
-    print(model_obj_name + end)
     if hasattr(transformers_expand, model_obj_name + end):
         try:
             model_ckp_list = getattr(getattr(getattr(getattr(transformers, 'models'), name), modeling_name),
@@ -164,8 +163,7 @@ if __name__ == '__main__':
                  'layoutlm', # 不合适
                  'layoutlmv2',# 不合适
                  'layoutlmv3',# 不合适
-                 # 'markuplm',
-                 # 'nezha',
+                 'markuplm',# 不合适
                  'fnet',  # 不支持attention_mask
 
                  ]

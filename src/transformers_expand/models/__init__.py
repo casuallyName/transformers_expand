@@ -20,7 +20,6 @@ from . import (
     ibert,
     longformer,
     luke,
-    markuplm,
     megatron_bert,
     mobilebert,
     mpnet,
