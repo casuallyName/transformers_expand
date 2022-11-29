@@ -5,17 +5,11 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-import math
-import os
-import warnings
 from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
-
-from transformers.activations import ACT2FN
 from transformers.modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
     BaseModelOutputWithPoolingAndCrossAttentions,
@@ -27,21 +21,16 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import find_pruneable_heads_and_indices, prune_linear_layer
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
-    is_pytorch_quantization_available,
     logging,
-    replace_return_docstrings,
-    requires_backends,
 )
 from transformers.models.qdqbert.modeling_qdqbert import (
     _TOKENIZER_FOR_DOC,
     _CONFIG_FOR_DOC,
-_CHECKPOINT_FOR_DOC,
+    _CHECKPOINT_FOR_DOC,
     QDQBERT_START_DOCSTRING,
     QDQBERT_INPUTS_DOCSTRING,
     QDQBertModel,

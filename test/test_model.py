@@ -49,20 +49,23 @@ def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
 
 def forward_func_for_biaffine(model, tokenizer):
     max_length = 5
-    try:
-        inputs = tokenizer('测试句子',
-                           max_length=max_length,
-                           truncation=True,
-                           padding='max_length',
-                           return_tensors='pt'
-                           )
-    except ValueError:
-        inputs = tokenizer(['测试', '句子'],
-                           max_length=max_length,
-                           truncation=True,
-                           padding='max_length',
-                           return_tensors='pt'
-                           )
+    input_text = '测试句子'
+    if model.config._name_or_path == 'gpt':
+        tokenizer.pad_token = tokenizer.eos_token
+
+    inputs = tokenizer(input_text,
+                       max_length=max_length,
+                       truncation=True,
+                       padding='max_length',
+                       return_tensors='pt'
+                       )
+    # except ValueError:
+    #     inputs = tokenizer(['测试', '句子'],
+    #                        max_length=max_length,
+    #                        truncation=True,
+    #                        padding='max_length',
+    #                        return_tensors='pt'
+    #                        )
     attention_mask = inputs['attention_mask'].numpy().tolist()[0]
     seq_len = len(attention_mask)
     seq_mask = [attention_mask for i in range(sum(attention_mask))]
@@ -81,20 +84,16 @@ def forward_func_for_biaffine(model, tokenizer):
 
 def forward_func_for_global_pointer(model, tokenizer):
     max_length = 5
-    try:
-        inputs = tokenizer('测试句子',
-                           max_length=max_length,
-                           truncation=True,
-                           padding='max_length',
-                           return_tensors='pt'
-                           )
-    except ValueError:
-        inputs = tokenizer(['测试', '句子'],
-                           max_length=max_length,
-                           truncation=True,
-                           padding='max_length',
-                           return_tensors='pt'
-                           )
+    input_text = '测试句子'
+    if model.config._name_or_path == 'gpt':
+        tokenizer.pad_token = tokenizer.eos_token
+
+    inputs = tokenizer(input_text,
+                       max_length=max_length,
+                       truncation=True,
+                       padding='max_length',
+                       return_tensors='pt'
+                       )
     inputs['labels'] = torch.zeros(size=(1, 2, max_length, max_length))
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
