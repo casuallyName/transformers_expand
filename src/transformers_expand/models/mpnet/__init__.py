@@ -22,7 +22,7 @@ except OptionalDependencyNotAvailable:
     pass
 else:
     _import_structure["modeling_mpnet"] = [
-        "MPNetForTokenClassificationithBiaffine",
+        "MPNetForTokenClassificationWithBiaffine",
         "MPNetForTokenClassificationWithGlobalPointer",
     ]
 
@@ -35,7 +35,7 @@ if TYPE_CHECKING:
         pass
     else:
         from .modeling_mpnet import (
-            MPNetForTokenClassificationithBiaffine,
+            MPNetForTokenClassificationWithBiaffine,
             MPNetForTokenClassificationWithGlobalPointer,
         )
 else:

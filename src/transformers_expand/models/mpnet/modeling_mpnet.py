@@ -5,14 +5,11 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-import math
 from typing import Optional, Tuple, Union
 
 import torch
 from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import ACT2FN, gelu
 from transformers.modeling_outputs import (
     BaseModelOutput,
     BaseModelOutputWithPooling,
@@ -22,10 +19,12 @@ from transformers.modeling_outputs import (
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import find_pruneable_heads_and_indices, prune_linear_layer
-from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
+from transformers.utils import (
+    add_code_sample_docstrings,
+    add_start_docstrings,
+    add_start_docstrings_to_model_forward,
     logging
+)
 from transformers.models.mpnet.modeling_mpnet import (
     MPNET_START_DOCSTRING,
     MPNET_INPUTS_DOCSTRING,
@@ -56,7 +55,7 @@ logger = logging.get_logger(__name__)
     """,
     MPNET_START_DOCSTRING,
 )
-class MPNetForTokenClassificationithBiaffine(MPNetPreTrainedModel):
+class MPNetForTokenClassificationWithBiaffine(MPNetPreTrainedModel):
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
     _keys_to_ignore_on_load_missing = [r"position_ids"]
 

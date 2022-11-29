@@ -237,7 +237,7 @@ else:
 
     _import_structure["models.mpnet"].extend(
         [
-            "MPNetForTokenClassificationithBiaffine",
+            "MPNetForTokenClassificationWithBiaffine",
             "MPNetForTokenClassificationWithGlobalPointer",
         ]
     )
@@ -440,7 +440,7 @@ if TYPE_CHECKING:
             MobileBertForTokenClassificationWithGlobalPointer,
         )
         from .models.mpnet import (
-            MPNetForTokenClassificationithBiaffine,
+            MPNetForTokenClassificationWithBiaffine,
             MPNetForTokenClassificationWithGlobalPointer,
         )
         from .models.nezha import (
