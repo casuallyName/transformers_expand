@@ -1,36 +1,52 @@
 # -*- coding: utf-8 -*-
-# @Time     : 2022/11/29 09:29
-# @File     : modeling_nystromformer.py
+# @Time     : 2022/11/29 10:03
+# @File     : modeling_qdqbert.py
 # @Author   : Zhou Hang
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-from typing import Optional, Tuple, Union
+import math
+import os
+import warnings
+from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
 from torch import nn
+from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
+from transformers.activations import ACT2FN
 from transformers.modeling_outputs import (
     BaseModelOutputWithPastAndCrossAttentions,
+    BaseModelOutputWithPoolingAndCrossAttentions,
+    CausalLMOutputWithCrossAttentions,
     MaskedLMOutput,
     MultipleChoiceModelOutput,
+    NextSentencePredictorOutput,
     QuestionAnsweringModelOutput,
     SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, logging
-
-from transformers.models.nystromformer.modeling_nystromformer import (
+from transformers.modeling_utils import PreTrainedModel
+from transformers.pytorch_utils import find_pruneable_heads_and_indices, prune_linear_layer
+from transformers.utils import (
+    add_code_sample_docstrings,
+    add_start_docstrings,
+    add_start_docstrings_to_model_forward,
+    is_pytorch_quantization_available,
+    logging,
+    replace_return_docstrings,
+    requires_backends,
+)
+from transformers.models.qdqbert.modeling_qdqbert import (
     _TOKENIZER_FOR_DOC,
     _CONFIG_FOR_DOC,
-    _CHECKPOINT_FOR_DOC,
-    NYSTROMFORMER_START_DOCSTRING,
-    NYSTROMFORMER_INPUTS_DOCSTRING,
-    NystromformerModel,
-    NystromformerPreTrainedModel,
+_CHECKPOINT_FOR_DOC,
+    QDQBERT_START_DOCSTRING,
+    QDQBERT_INPUTS_DOCSTRING,
+    QDQBertModel,
+    QDQBertPreTrainedModel,
 )
-
 
 from ...nn import (
     GlobalPointer,
@@ -40,17 +56,24 @@ from ...nn import (
     SpanLoss,
 )
 
+
 logger = logging.get_logger(__name__)
+
+
+
 
 
 @add_start_docstrings(
     """
-    Nyströmformer Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    QDQBERT Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
     e.g. for Named-Entity-Recognition (NER) tasks.
     """,
-    NYSTROMFORMER_START_DOCSTRING,
+    QDQBERT_START_DOCSTRING,
 )
-class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedModel):
+class QDQBertForTokenClassificationWithBiaffine(QDQBertPreTrainedModel):
+
+    _keys_to_ignore_on_load_unexpected = [r"pooler"]
+
     def __init__(self, config, biaffine_input_size: int = None, use_lstm: bool = None):
         super().__init__(config)
         # 此处 +1 操作是由于实体标签类别中含有一个 "非实体" 类别，即label map中的 0
@@ -74,7 +97,7 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
         self.use_lstm = config.use_lstm
         self.biaffine_input_size = config.biaffine_input_size
 
-        self.nystromformer = NystromformerModel(config)
+        self.bert = QDQBertModel(config, add_pooling_layer=False)
 
         if self.use_lstm:
             self.lstm = torch.nn.LSTM(input_size=768,
@@ -103,7 +126,7 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(NYSTROMFORMER_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(QDQBERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
         checkpoint=_CHECKPOINT_FOR_DOC,
@@ -125,14 +148,14 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
-    ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
+    ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        outputs = self.nystromformer(
+        outputs = self.bert(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
@@ -163,7 +186,7 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
             loss = loss_fct(span_logits=logits, span_label=labels, sequence_mask=sequence_mask)
 
         if not return_dict:
-            output = (logits,) + outputs[1:]
+            output = (logits,) + outputs[2:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -173,24 +196,23 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
             attentions=outputs.attentions,
         )
 
-
-
-
 @add_start_docstrings(
     """
-    Nyströmformer Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    QDQBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
     e.g. for Named-Entity-Recognition (NER) tasks.
     """,
-    NYSTROMFORMER_START_DOCSTRING,
+    QDQBERT_START_DOCSTRING,
 )
-class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrainedModel):
+class QDQBertForTokenClassificationWithGlobalPointer(QDQBertPreTrainedModel):
+
+    _keys_to_ignore_on_load_unexpected = [r"pooler"]
+
     def __init__(self, config, inner_dim: int = None, use_efficient: bool = None):
         super().__init__(config)
         self.num_labels = config.num_labels
 
-        self.nystromformer = NystromformerModel(config)
+        self.bert = QDQBertModel(config, add_pooling_layer=False)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
-
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
                 f"Parameter conflict, user set inner_dim is {inner_dim}, but config.inner_dim is {config.inner_dim}. "
@@ -218,16 +240,17 @@ class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrain
                 config.hidden_size
             )
 
-
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(NYSTROMFORMER_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(QDQBERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
         checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        expected_loss=0.01,
     )
     def forward(
         self,
@@ -241,14 +264,14 @@ class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrain
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
-    ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
+    ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        outputs = self.nystromformer(
+        outputs = self.bert(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
@@ -273,7 +296,7 @@ class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrain
             loss = loss_fct(logits, labels)
 
         if not return_dict:
-            output = (logits,) + outputs[1:]
+            output = (logits,) + outputs[2:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -282,3 +305,4 @@ class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrain
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
         )
+

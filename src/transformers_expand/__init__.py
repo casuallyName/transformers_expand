@@ -253,6 +253,12 @@ else:
             "NystromformerForTokenClassificationWithGlobalPointer",
         ]
     )
+    _import_structure["models.qdqbert"].extend(
+        [
+            "QDQBertForTokenClassificationWithGlobalPointer",
+            "QDQBertForTokenClassificationWithBiaffine",
+        ]
+    )
     # TODO
     _import_structure["models.roberta"].extend(
         [
@@ -332,14 +338,14 @@ if TYPE_CHECKING:
             AlbertForTokenClassificationWithGlobalPointer,
         )
         from .models.auto import (
+            MODEL_FOR_TOKEN_CLASSIFICATION_WITH_BIAFFINE_POINTER_MAPPING,
+            AutoModelForTokenClassificationWithBiaffine,
             MODEL_FOR_TOKEN_CLASSIFICATION_WITH_GLOBAL_POINTER_MAPPING,
             AutoModelForTokenClassificationWithGlobalPointer,
-            MODEL_FOR_TOKEN_CLASSIFICATION_WITH_BIAFFINE_POINTER_MAPPING,
-            AutoModelForTokenClassificationWithBiaffine
         )
         from .models.bert import (
-            BertForTokenClassificationWithGlobalPointer,
             BertForTokenClassificationWithBiaffine,
+            BertForTokenClassificationWithGlobalPointer,
         )
         from .models.big_bird import (
             BigBirdForTokenClassificationWithBiaffine,
@@ -385,8 +391,8 @@ if TYPE_CHECKING:
         )
 
         from .models.electra import (
-            ElectraForTokenClassificationWithGlobalPointer,
             ElectraForTokenClassificationWithBiaffine,
+            ElectraForTokenClassificationWithGlobalPointer,
         )
         from .models.ernie import (
             ErnieForTokenClassificationWithBiaffine,
@@ -440,7 +446,10 @@ if TYPE_CHECKING:
             NystromformerForTokenClassificationWithBiaffine,
             NystromformerForTokenClassificationWithGlobalPointer,
         )
-
+        from .models.qdqbert import (
+            QDQBertForTokenClassificationWithBiaffine,
+            QDQBertForTokenClassificationWithGlobalPointer,
+        )
         # TODO
         from .models.roberta import (
             RobertaForTokenClassificationWithBiaffine,

@@ -10,19 +10,35 @@ from torch import nn
 
 from typing import List, Optional, Tuple, Union, Any
 
-from transformers.utils import logging
 
-from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, logging
+from transformers.modeling_outputs import (
+    BaseModelOutputWithPastAndCrossAttentions,
+    BaseModelOutputWithPoolingAndCrossAttentions,
+    CausalLMOutputWithCrossAttentions,
+    MaskedLMOutput,
+    MultipleChoiceModelOutput,
+    NextSentencePredictorOutput,
+    QuestionAnsweringModelOutput,
+    SequenceClassifierOutput,
+    TokenClassifierOutput,
+)
+
+from transformers.utils import (
+    add_code_sample_docstrings,
+    add_start_docstrings,
+    add_start_docstrings_to_model_forward,
+    logging
+)
 
 
 from transformers.models.bert.modeling_bert import (
     _TOKENIZER_FOR_DOC,
     _CONFIG_FOR_DOC,
+_CHECKPOINT_FOR_DOC,
     BERT_START_DOCSTRING,
     BERT_INPUTS_DOCSTRING,
     BertModel,
     BertPreTrainedModel,
-    TokenClassifierOutput,
 )
 
 from ...nn import (
@@ -104,7 +120,7 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
     @add_start_docstrings_to_model_forward(BERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint="bert-base-chinese",
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
         expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
@@ -220,7 +236,7 @@ class BertForTokenClassificationWithGlobalPointer(BertPreTrainedModel):
     @add_start_docstrings_to_model_forward(BERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint="bert-base-chinese",
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
         expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
