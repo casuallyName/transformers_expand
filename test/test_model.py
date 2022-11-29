@@ -47,25 +47,13 @@ def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
         return None, None, None
 
 
-def forward_func_for_biaffine(model, tokenizer):
-    max_length = 5
-    input_text = '测试句子'
-    if model.config._name_or_path == 'gpt':
-        tokenizer.pad_token = tokenizer.eos_token
-
+def forward_func_for_biaffine(input_text,model, tokenizer,max_length = 5):
     inputs = tokenizer(input_text,
                        max_length=max_length,
                        truncation=True,
                        padding='max_length',
                        return_tensors='pt'
                        )
-    # except ValueError:
-    #     inputs = tokenizer(['测试', '句子'],
-    #                        max_length=max_length,
-    #                        truncation=True,
-    #                        padding='max_length',
-    #                        return_tensors='pt'
-    #                        )
     attention_mask = inputs['attention_mask'].numpy().tolist()[0]
     seq_len = len(attention_mask)
     seq_mask = [attention_mask for i in range(sum(attention_mask))]
@@ -82,12 +70,7 @@ def forward_func_for_biaffine(model, tokenizer):
     return loss
 
 
-def forward_func_for_global_pointer(model, tokenizer):
-    max_length = 5
-    input_text = '测试句子'
-    if model.config._name_or_path == 'gpt':
-        tokenizer.pad_token = tokenizer.eos_token
-
+def forward_func_for_global_pointer(input_text,model, tokenizer,max_length = 5):
     inputs = tokenizer(input_text,
                        max_length=max_length,
                        truncation=True,
@@ -124,15 +107,22 @@ def check_model(model_list, end, auto_name, forward_func, pass_list=None):
         else:
             for pretrained_model_name_or_path in model_ckp_list:
                 try:
+                    input_text = '测试句子'
                     tokenizer = transformers.AutoTokenizer.from_pretrained(
                         pretrained_model_name_or_path=pretrained_model_name_or_path,
                         cache_dir='./Cache',
                     )
                     model_1 = model_1.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
-                    loss_1 = forward_func(model_1, tokenizer)
+                    print(model_1.config._name_or_path)
+                    if model_1.config._name_or_path == 'gpt2':
+                        tokenizer.pad_token = tokenizer.eos_token
+
+
+
+                    loss_1 = forward_func(input_text,model_1, tokenizer)
                     del model_1
                     model_2 = model_2.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
-                    loss_2 = forward_func(model_2, tokenizer)
+                    loss_2 = forward_func(input_text,model_2, tokenizer)
                     del model_2
                     # print(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m'
