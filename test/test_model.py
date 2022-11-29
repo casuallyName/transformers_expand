@@ -110,7 +110,6 @@ def check_model(model_list, end, auto_name, forward_func, pass_list=None):
                         cache_dir='./Cache',
                     )
                     model_1 = model_1.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
-                    print(model_1.config._name_or_path)
                     if 'gpt2' in model_1.config._name_or_path:
                         tokenizer.pad_token = tokenizer.eos_token
                     # if 'deberta' in model_1.config._name_or_path:
