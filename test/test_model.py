@@ -164,6 +164,7 @@ if __name__ == '__main__':
                  'layoutlmv2',# 不合适
                  'layoutlmv3',# 不合适
                  'markuplm',# 不合适
+                 'megatron-bert',# 不合适
                  'fnet',  # 不支持attention_mask
 
                  ]

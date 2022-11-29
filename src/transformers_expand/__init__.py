@@ -47,6 +47,9 @@ _import_structure = {
     "models.mobilebert": [],
     "models.mpnet": [],
     "models.nezha": [],
+    "models.nystromformer":[],
+    "models.qdqbert":[],
+    "models.rembert":[],
     # TODO
     "models.roberta": [],
     "models.roformer": [],
@@ -244,43 +247,64 @@ else:
             "NezhaForTokenClassificationWithGlobalPointer",
         ]
     )
-
+    _import_structure["models.nystromformer"].extend(
+        [
+            "NystromformerForTokenClassificationWithBiaffine",
+            "NystromformerForTokenClassificationWithGlobalPointer",
+        ]
+    )
     # TODO
-    _import_structure["models.roberta"] = [
-        "RobertaForTokenClassificationWithBiaffine",
-        "RobertaForTokenClassificationWithGlobalPointer",
-    ]
+    _import_structure["models.roberta"].extend(
+        [
+            "RobertaForTokenClassificationWithBiaffine",
+            "RobertaForTokenClassificationWithGlobalPointer",
+        ]
+    )
 
-    _import_structure["models.roformer"] = [
-        "RoFormerForTokenClassificationWithBiaffine",
-        "RoFormerForTokenClassificationWithGlobalPointer",
-    ]
+    _import_structure["models.roformer"].extend(
+        [
+            "RoFormerForTokenClassificationWithBiaffine",
+            "RoFormerForTokenClassificationWithGlobalPointer",
+        ]
+    )
 
-    _import_structure["models.squeezebert"] = [
-        "SqueezeBertForTokenClassificationWithBiaffine",
-        "SqueezeBertForTokenClassificationWithGlobalPointer",
-    ]
+    _import_structure["models.squeezebert"].extend(
+        [
+            "SqueezeBertForTokenClassificationWithBiaffine",
+            "SqueezeBertForTokenClassificationWithGlobalPointer",
+        ]
+    )
 
-    _import_structure["models.xlm"] = [
-        "XLMForTokenClassificationWithGlobalPointer",
-        "XLMForTokenClassificationWithBiaffine"
-    ]
-    _import_structure["models.xlm_roberta"] = [
-        "XLMRobertaForTokenClassificationWithGlobalPointer",
-        "XLMRobertaForTokenClassificationWithBiaffine"
-    ]
-    _import_structure["models.xlm_roberta_xl"] = [
-        "XLMRobertaXLForTokenClassificationWithBiaffine",
-        "XLMRobertaXLForTokenClassificationWithGlobalPointer",
-    ]
-    _import_structure["models.xlnet"] = [
-        "XLNetForTokenClassificationWithBiaffine",
-        "XLNetForTokenClassificationWithGlobalPointer",
-    ]
-    _import_structure["models.yoso"] = [
-        "YosoForTokenClassificationWithBiaffine",
-        "YosoForTokenClassificationWithGlobalPointer",
-    ]
+    _import_structure["models.xlm"].extend(
+        [
+            "XLMForTokenClassificationWithGlobalPointer",
+            "XLMForTokenClassificationWithBiaffine"
+        ]
+    )
+    _import_structure["models.xlm_roberta"].extend(
+        [
+            "XLMRobertaForTokenClassificationWithGlobalPointer",
+            "XLMRobertaForTokenClassificationWithBiaffine"
+        ]
+    )
+    _import_structure["models.xlm_roberta_xl"].extend(
+        [
+            "XLMRobertaXLForTokenClassificationWithBiaffine",
+            "XLMRobertaXLForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.xlnet"].extend(
+        [
+            "XLNetForTokenClassificationWithBiaffine",
+            "XLNetForTokenClassificationWithGlobalPointer",
+        ]
+    )
+    _import_structure["models.yoso"].extend(
+        [
+            "YosoForTokenClassificationWithBiaffine",
+            "YosoForTokenClassificationWithGlobalPointer",
+        ]
+    )
 
 # Direct imports for type-checking
 if TYPE_CHECKING:
@@ -411,6 +435,10 @@ if TYPE_CHECKING:
         from .models.nezha import (
             NezhaForTokenClassificationWithBiaffine,
             NezhaForTokenClassificationWithGlobalPointer,
+        )
+        from .models.nystromformer import (
+            NystromformerForTokenClassificationWithBiaffine,
+            NystromformerForTokenClassificationWithGlobalPointer,
         )
 
         # TODO

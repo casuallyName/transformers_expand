@@ -1,29 +1,42 @@
 # -*- coding: utf-8 -*-
-# @Time     : 2022/11/26 15:51
-# @File     : modeling_bert.py.py
+# @Time     : 2022/11/29 09:29
+# @File     : modeling_nystromformer.py
 # @Author   : Zhou Hang
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
+import math
+from typing import Optional, Tuple, Union
+
+import torch
 import torch.utils.checkpoint
 from torch import nn
+from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from typing import List, Optional, Tuple, Union, Any
-
-from transformers.utils import logging
-
-from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, logging
-
-
-from transformers.models.bert.modeling_bert import (
-    _TOKENIZER_FOR_DOC,
-    _CONFIG_FOR_DOC,
-    BERT_START_DOCSTRING,
-    BERT_INPUTS_DOCSTRING,
-    BertModel,
-    BertPreTrainedModel,
+from transformers.activations import ACT2FN
+from transformers.modeling_outputs import (
+    BaseModelOutputWithPastAndCrossAttentions,
+    MaskedLMOutput,
+    MultipleChoiceModelOutput,
+    QuestionAnsweringModelOutput,
+    SequenceClassifierOutput,
     TokenClassifierOutput,
 )
+from transformers.modeling_utils import PreTrainedModel
+from transformers.pytorch_utils import apply_chunking_to_forward, find_pruneable_heads_and_indices, prune_linear_layer
+from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, logging
+
+from transformers.models.nystromformer.modeling_nystromformer import (
+    _TOKENIZER_FOR_DOC,
+    _CONFIG_FOR_DOC,
+    _CHECKPOINT_FOR_DOC,
+    NYSTROMFORMER_START_DOCSTRING,
+    NYSTROMFORMER_INPUTS_DOCSTRING,
+    NystromformerModel,
+    NystromformerPreTrainedModel,
+    TokenClassifierOutput,
+)
+
 
 from ...nn import (
     GlobalPointer,
@@ -38,14 +51,12 @@ logger = logging.get_logger(__name__)
 
 @add_start_docstrings(
     """
-    Bert Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    Nyströmformer Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
     e.g. for Named-Entity-Recognition (NER) tasks.
     """,
-    BERT_START_DOCSTRING,
+    NYSTROMFORMER_START_DOCSTRING,
 )
-class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
-    _keys_to_ignore_on_load_unexpected = [r"pooler"]
-
+class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedModel):
     def __init__(self, config, biaffine_input_size: int = None, use_lstm: bool = None):
         super().__init__(config)
         # 此处 +1 操作是由于实体标签类别中含有一个 "非实体" 类别，即label map中的 0
@@ -69,7 +80,7 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
         self.use_lstm = config.use_lstm
         self.biaffine_input_size = config.biaffine_input_size
 
-        self.bert = BertModel(config, add_pooling_layer=False)
+        self.nystromformer = NystromformerModel(config)
 
         if self.use_lstm:
             self.lstm = torch.nn.LSTM(input_size=768,
@@ -85,10 +96,7 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            classifier_dropout = (
-                config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
-            )
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = nn.Dropout(config.hidden_dropout_prob)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -101,31 +109,36 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(BERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(NYSTROMFORMER_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint="bert-base-chinese",
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
         expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=0.01,
     )
     def forward(
-            self,
-            input_ids: Optional[torch.Tensor] = None,
-            attention_mask: Optional[torch.Tensor] = None,
-            token_type_ids: Optional[torch.Tensor] = None,
-            position_ids: Optional[torch.Tensor] = None,
-            head_mask: Optional[torch.Tensor] = None,
-            inputs_embeds: Optional[torch.Tensor] = None,
-            labels: Optional[torch.Tensor] = None,
+        self,
+        input_ids: Optional[torch.LongTensor] = None,
+        attention_mask: Optional[torch.FloatTensor] = None,
+        token_type_ids: Optional[torch.LongTensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        head_mask: Optional[torch.FloatTensor] = None,
+        inputs_embeds: Optional[torch.FloatTensor] = None,
+        labels: Optional[torch.LongTensor] = None,
             sequence_mask: Optional[torch.Tensor] = None,
-            output_attentions: Optional[bool] = None,
-            output_hidden_states: Optional[bool] = None,
-            return_dict: Optional[bool] = None,
+        output_attentions: Optional[bool] = None,
+        output_hidden_states: Optional[bool] = None,
+        return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
+        r"""
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
-        outputs = self.bert(
+
+        outputs = self.nystromformer(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
@@ -156,7 +169,7 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
             loss = loss_fct(span_logits=logits, span_label=labels, sequence_mask=sequence_mask)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -167,25 +180,22 @@ class BertForTokenClassificationWithBiaffine(BertPreTrainedModel):
         )
 
 
+
+
 @add_start_docstrings(
     """
-    Bert Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    Nyströmformer Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
     e.g. for Named-Entity-Recognition (NER) tasks.
     """,
-    BERT_START_DOCSTRING,
+    NYSTROMFORMER_START_DOCSTRING,
 )
-class BertForTokenClassificationWithGlobalPointer(BertPreTrainedModel):
-    _keys_to_ignore_on_load_unexpected = [r"pooler"]
-
+class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrainedModel):
     def __init__(self, config, inner_dim: int = None, use_efficient: bool = None):
         super().__init__(config)
         self.num_labels = config.num_labels
 
-        self.bert = BertModel(config, add_pooling_layer=False)
-        classifier_dropout = (
-            config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
-        )
-        self.dropout = nn.Dropout(classifier_dropout)
+        self.nystromformer = NystromformerModel(config)
+        self.dropout = nn.Dropout(config.hidden_dropout_prob)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -214,34 +224,37 @@ class BertForTokenClassificationWithGlobalPointer(BertPreTrainedModel):
                 config.hidden_size
             )
 
+
         # Initialize weights and apply final processing
         self.post_init()
 
-    @add_start_docstrings_to_model_forward(BERT_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
+    @add_start_docstrings_to_model_forward(NYSTROMFORMER_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint="bert-base-chinese",
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
-        expected_loss=0.01,
     )
     def forward(
-            self,
-            input_ids: Optional[torch.Tensor] = None,
-            attention_mask: Optional[torch.Tensor] = None,
-            token_type_ids: Optional[torch.Tensor] = None,
-            position_ids: Optional[torch.Tensor] = None,
-            head_mask: Optional[torch.Tensor] = None,
-            inputs_embeds: Optional[torch.Tensor] = None,
-            labels: Optional[torch.Tensor] = None,
-            output_attentions: Optional[bool] = None,
-            output_hidden_states: Optional[bool] = None,
-            return_dict: Optional[bool] = None,
+        self,
+        input_ids: Optional[torch.LongTensor] = None,
+        attention_mask: Optional[torch.FloatTensor] = None,
+        token_type_ids: Optional[torch.LongTensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        head_mask: Optional[torch.FloatTensor] = None,
+        inputs_embeds: Optional[torch.FloatTensor] = None,
+        labels: Optional[torch.LongTensor] = None,
+        output_attentions: Optional[bool] = None,
+        output_hidden_states: Optional[bool] = None,
+        return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
+        r"""
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        outputs = self.bert(
+        outputs = self.nystromformer(
             input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids,
@@ -266,7 +279,7 @@ class BertForTokenClassificationWithGlobalPointer(BertPreTrainedModel):
             loss = loss_fct(logits, labels)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
