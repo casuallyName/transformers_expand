@@ -5,24 +5,25 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-
 from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
 
-from transformers.file_utils import add_code_sample_docstrings, add_start_docstrings, \
-    add_start_docstrings_to_model_forward
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    BaseModelOutputWithPoolingAndCrossAttentions,
-    MaskedLMOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutputWithPastAndCrossAttentions,
+    # BaseModelOutputWithPoolingAndCrossAttentions,
+    # MaskedLMOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 
-from transformers.utils import logging
+from transformers.utils import (
+    add_code_sample_docstrings,
+    add_start_docstrings,
+    add_start_docstrings_to_model_forward,
+    logging,
+)
 
 from transformers.models.esm.modeling_esm import (
     ESM_START_DOCSTRING,
@@ -30,7 +31,6 @@ from transformers.models.esm.modeling_esm import (
     _TOKENIZER_FOR_DOC,
     _CHECKPOINT_FOR_DOC,
     _CONFIG_FOR_DOC,
-
     EsmModel,
     EsmPreTrainedModel
 )
@@ -96,7 +96,7 @@ class EsmForTokenClassificationWithBiaffine(EsmPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.hidden_dropout_prob)
+            self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -131,8 +131,8 @@ class EsmForTokenClassificationWithBiaffine(EsmPreTrainedModel):
             return_dict=None,
     ):
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -193,7 +193,7 @@ class EsmForTokenClassificationWithGlobalPointer(EsmPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.esm = EsmModel(config, add_pooling_layer=False)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(

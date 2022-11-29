@@ -10,10 +10,8 @@
 from typing import List, Optional, Tuple, Union
 
 import torch
-from torch import nn
 
 from transformers.utils import (
-    ModelOutput,
     add_code_sample_docstrings,
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
@@ -128,9 +126,8 @@ class XLNetForTokenClassificationWithBiaffine(XLNetPreTrainedModel):
             **kwargs,  # delete when `use_cache` is removed in XLNetModel
     ) -> Union[Tuple, XLNetForTokenClassificationOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
-            Labels for computing the multiple choice classification loss. Indices should be in `[0, transformers., num_choices]`
-            where *num_choices* is the size of the second dimension of the input tensors. (see *input_ids* above)
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -154,7 +151,6 @@ class XLNetForTokenClassificationWithBiaffine(XLNetPreTrainedModel):
 
         if self.use_lstm:
             sequence_output, _ = self.lstm(sequence_output)
-
 
         start_logits = self.start_layer(sequence_output)
         end_logits = self.end_layer(sequence_output)
@@ -252,9 +248,8 @@ class XLNetForTokenClassificationWithGlobalPointer(XLNetPreTrainedModel):
             **kwargs,  # delete when `use_cache` is removed in XLNetModel
     ) -> Union[Tuple, XLNetForTokenClassificationOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
-            Labels for computing the multiple choice classification loss. Indices should be in `[0, transformers., num_choices]`
-            where *num_choices* is the size of the second dimension of the input tensors. (see *input_ids* above)
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 

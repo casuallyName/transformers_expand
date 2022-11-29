@@ -10,18 +10,22 @@ from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
+
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    BaseModelOutputWithPoolingAndCrossAttentions,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutputWithPastAndCrossAttentions,
+    # BaseModelOutputWithPoolingAndCrossAttentions,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
+from transformers.utils import (
+    add_code_sample_docstrings,
+    add_start_docstrings,
+    add_start_docstrings_to_model_forward,
     logging
+)
 
 from transformers.models.ibert.modeling_ibert import (
     IBERT_START_DOCSTRING,
@@ -95,7 +99,7 @@ class IBertForTokenClassificationWithBiaffine(IBertPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.hidden_dropout_prob)
+            self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -132,8 +136,8 @@ class IBertForTokenClassificationWithBiaffine(IBertPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[TokenClassifierOutput, Tuple[torch.FloatTensor]]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, transformers., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -195,7 +199,7 @@ class IBertForTokenClassificationWithGlobalPointer(IBertPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.ibert = IBertModel(config, add_pooling_layer=False)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -249,8 +253,8 @@ class IBertForTokenClassificationWithGlobalPointer(IBertPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[TokenClassifierOutput, Tuple[torch.FloatTensor]]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, transformers., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 

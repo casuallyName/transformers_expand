@@ -9,16 +9,16 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
+
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    BaseModelOutputWithPoolingAndCrossAttentions,
-    CausalLMOutputWithCrossAttentions,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    NextSentencePredictorOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutputWithPastAndCrossAttentions,
+    # BaseModelOutputWithPoolingAndCrossAttentions,
+    # CausalLMOutputWithCrossAttentions,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # NextSentencePredictorOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 from transformers.utils import (
@@ -45,11 +45,7 @@ from ...nn import (
     SpanLoss,
 )
 
-
 logger = logging.get_logger(__name__)
-
-
-
 
 
 @add_start_docstrings(
@@ -60,7 +56,6 @@ logger = logging.get_logger(__name__)
     QDQBERT_START_DOCSTRING,
 )
 class QDQBertForTokenClassificationWithBiaffine(QDQBertPreTrainedModel):
-
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
 
     def __init__(self, config, biaffine_input_size: int = None, use_lstm: bool = None):
@@ -102,7 +97,7 @@ class QDQBertForTokenClassificationWithBiaffine(QDQBertPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.hidden_dropout_prob)
+            self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -125,22 +120,22 @@ class QDQBertForTokenClassificationWithBiaffine(QDQBertPreTrainedModel):
         expected_loss=0.01,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.LongTensor] = None,
-        attention_mask: Optional[torch.FloatTensor] = None,
-        token_type_ids: Optional[torch.LongTensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        head_mask: Optional[torch.FloatTensor] = None,
-        inputs_embeds: Optional[torch.FloatTensor] = None,
-        labels: Optional[torch.LongTensor] = None,
+            self,
+            input_ids: Optional[torch.LongTensor] = None,
+            attention_mask: Optional[torch.FloatTensor] = None,
+            token_type_ids: Optional[torch.LongTensor] = None,
+            position_ids: Optional[torch.LongTensor] = None,
+            head_mask: Optional[torch.FloatTensor] = None,
+            inputs_embeds: Optional[torch.FloatTensor] = None,
+            labels: Optional[torch.LongTensor] = None,
             sequence_mask: Optional[torch.Tensor] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -185,6 +180,7 @@ class QDQBertForTokenClassificationWithBiaffine(QDQBertPreTrainedModel):
             attentions=outputs.attentions,
         )
 
+
 @add_start_docstrings(
     """
     QDQBERT Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
@@ -193,7 +189,6 @@ class QDQBertForTokenClassificationWithBiaffine(QDQBertPreTrainedModel):
     QDQBERT_START_DOCSTRING,
 )
 class QDQBertForTokenClassificationWithGlobalPointer(QDQBertPreTrainedModel):
-
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
 
     def __init__(self, config, inner_dim: int = None, use_efficient: bool = None):
@@ -201,7 +196,7 @@ class QDQBertForTokenClassificationWithGlobalPointer(QDQBertPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.bert = QDQBertModel(config, add_pooling_layer=False)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
                 f"Parameter conflict, user set inner_dim is {inner_dim}, but config.inner_dim is {config.inner_dim}. "
@@ -242,20 +237,20 @@ class QDQBertForTokenClassificationWithGlobalPointer(QDQBertPreTrainedModel):
         expected_loss=0.01,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.LongTensor] = None,
-        attention_mask: Optional[torch.FloatTensor] = None,
-        token_type_ids: Optional[torch.LongTensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        head_mask: Optional[torch.FloatTensor] = None,
-        inputs_embeds: Optional[torch.FloatTensor] = None,
-        labels: Optional[torch.LongTensor] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
+            self,
+            input_ids: Optional[torch.LongTensor] = None,
+            attention_mask: Optional[torch.FloatTensor] = None,
+            token_type_ids: Optional[torch.LongTensor] = None,
+            position_ids: Optional[torch.LongTensor] = None,
+            head_mask: Optional[torch.FloatTensor] = None,
+            inputs_embeds: Optional[torch.FloatTensor] = None,
+            labels: Optional[torch.LongTensor] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
@@ -294,4 +289,3 @@ class QDQBertForTokenClassificationWithGlobalPointer(QDQBertPreTrainedModel):
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
         )
-

@@ -5,25 +5,25 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-
-
 import warnings
 from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
 
-from transformers.file_utils import add_code_sample_docstrings, add_start_docstrings, \
-    add_start_docstrings_to_model_forward
+from transformers.utils import (
+    add_code_sample_docstrings,
+    add_start_docstrings,
+    add_start_docstrings_to_model_forward,
+    logging,
+)
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    CausalLMOutputWithCrossAttentions,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutputWithPast,
+    # BaseModelOutputWithPastAndCrossAttentions,
+    # CausalLMOutputWithCrossAttentions,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutputWithPast,
     TokenClassifierOutput,
 )
-from transformers.utils import logging
 
 from transformers.models.bloom.modeling_bloom import (
     BLOOM_START_DOCSTRING,
@@ -102,7 +102,7 @@ class BloomForTokenClassificationWithBiaffine(BloomPreTrainedModel):
                 classifier_dropout = config.hidden_dropout
             else:
                 classifier_dropout = 0.1
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = torch.nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -139,10 +139,8 @@ class BloomForTokenClassificationWithBiaffine(BloomPreTrainedModel):
             **deprecated_arguments
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
-            Labels for computing the sequence classification/regression loss. Indices should be in `[0, ...,
-            config.num_labels - 1]`. If `config.num_labels == 1` a regression loss is computed (Mean-Square loss), If
-            `config.num_labels > 1` a classification loss is computed (Cross-Entropy).
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         if deprecated_arguments.pop("position_ids", False) is not False:
             # `position_ids` could have been `torch.Tensor` or `None` so defaulting pop to `False` allows to detect if users were passing explicitly `None`
@@ -219,7 +217,7 @@ class BloomForTokenClassificationWithGlobalPointer(BloomPreTrainedModel):
             classifier_dropout = config.hidden_dropout
         else:
             classifier_dropout = 0.1
-        self.dropout = nn.Dropout(classifier_dropout)
+        self.dropout = torch.nn.Dropout(classifier_dropout)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -274,10 +272,8 @@ class BloomForTokenClassificationWithGlobalPointer(BloomPreTrainedModel):
             **deprecated_arguments
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
-            Labels for computing the sequence classification/regression loss. Indices should be in `[0, ...,
-            config.num_labels - 1]`. If `config.num_labels == 1` a regression loss is computed (Mean-Square loss), If
-            `config.num_labels > 1` a classification loss is computed (Cross-Entropy).
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         if deprecated_arguments.pop("position_ids", False) is not False:
             # `position_ids` could have been `torch.Tensor` or `None` so defaulting pop to `False` allows to detect if users were passing explicitly `None`

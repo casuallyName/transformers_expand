@@ -9,12 +9,11 @@ from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
 
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    CausalLMOutputWithCrossAttentions,
-    SequenceClassifierOutputWithPast,
+    # BaseModelOutputWithPastAndCrossAttentions,
+    # CausalLMOutputWithCrossAttentions,
+    # SequenceClassifierOutputWithPast,
     TokenClassifierOutput,
 )
 from transformers.utils import (
@@ -97,7 +96,7 @@ class GPT2ForTokenClassificationWithBiaffine(GPT2PreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = torch.nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -141,10 +140,8 @@ class GPT2ForTokenClassificationWithBiaffine(GPT2PreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the sequence classification/regression loss. Indices should be in `[0, ...,
-            config.num_labels - 1]`. If `config.num_labels == 1` a regression loss is computed (Mean-Square loss), If
-            `config.num_labels > 1` a classification loss is computed (Cross-Entropy).
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -211,7 +208,7 @@ class GPT2ForTokenClassificationWithGlobalPointer(GPT2PreTrainedModel):
             classifier_dropout = config.hidden_dropout
         else:
             classifier_dropout = 0.1
-        self.dropout = nn.Dropout(classifier_dropout)
+        self.dropout = torch.nn.Dropout(classifier_dropout)
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
                 f"Parameter conflict, user set inner_dim is {inner_dim}, but config.inner_dim is {config.inner_dim}. "
@@ -273,10 +270,8 @@ class GPT2ForTokenClassificationWithGlobalPointer(GPT2PreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the sequence classification/regression loss. Indices should be in `[0, ...,
-            config.num_labels - 1]`. If `config.num_labels == 1` a regression loss is computed (Mean-Square loss), If
-            `config.num_labels > 1` a classification loss is computed (Cross-Entropy).
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 

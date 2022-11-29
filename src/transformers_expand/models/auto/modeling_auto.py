@@ -1,4 +1,3 @@
-import warnings
 from collections import OrderedDict
 
 from .auto_factory import _BaseAutoModelClass, _LazyAutoMapping

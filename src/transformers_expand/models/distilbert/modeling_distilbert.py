@@ -5,20 +5,18 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-
 from typing import Dict, List, Optional, Set, Tuple, Union
 
 import torch
-from torch import nn
 
 from transformers.configuration_utils import PretrainedConfig
 
 from transformers.modeling_outputs import (
-    BaseModelOutput,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutput,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 from transformers.utils import (
@@ -26,7 +24,6 @@ from transformers.utils import (
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
     logging,
-    replace_return_docstrings,
 )
 from transformers.models.distilbert.modeling_distilbert import (
     DISTILBERT_START_DOCSTRING,
@@ -38,8 +35,6 @@ from transformers.models.distilbert.modeling_distilbert import (
     _TOKENIZER_FOR_DOC,
 )
 
-logger = logging.get_logger(__name__)
-
 from ...nn import (
     GlobalPointer,
     EfficientGlobalPointer,
@@ -47,6 +42,8 @@ from ...nn import (
     Biaffine,
     SpanLoss,
 )
+
+logger = logging.get_logger(__name__)
 
 
 @add_start_docstrings(
@@ -95,7 +92,7 @@ class DistilBertForTokenClassificationWithBiaffine(DistilBertPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.dropout)
+            self.dropout = torch.nn.Dropout(config.dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -111,7 +108,7 @@ class DistilBertForTokenClassificationWithBiaffine(DistilBertPreTrainedModel):
         # Initialize weights and apply final processing
         self.post_init()
 
-    def get_position_embeddings(self) -> nn.Embedding:
+    def get_position_embeddings(self) -> torch.nn.Embedding:
         """
         Returns the position embeddings
         """
@@ -152,8 +149,8 @@ class DistilBertForTokenClassificationWithBiaffine(DistilBertPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[TokenClassifierOutput, Tuple[torch.Tensor, ...]]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -210,7 +207,7 @@ class DistilBertForTokenClassificationWithGlobalPointer(DistilBertPreTrainedMode
         self.num_labels = config.num_labels
 
         self.distilbert = DistilBertModel(config)
-        self.dropout = nn.Dropout(config.dropout)
+        self.dropout = torch.nn.Dropout(config.dropout)
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
                 f"Parameter conflict, user set inner_dim is {inner_dim}, but config.inner_dim is {config.inner_dim}. "
@@ -241,7 +238,7 @@ class DistilBertForTokenClassificationWithGlobalPointer(DistilBertPreTrainedMode
         # Initialize weights and apply final processing
         self.post_init()
 
-    def get_position_embeddings(self) -> nn.Embedding:
+    def get_position_embeddings(self) -> torch.nn.Embedding:
         """
         Returns the position embeddings
         """
@@ -281,7 +278,7 @@ class DistilBertForTokenClassificationWithGlobalPointer(DistilBertPreTrainedMode
             return_dict: Optional[bool] = None,
     ) -> Union[TokenClassifierOutput, Tuple[torch.Tensor, ...]]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict

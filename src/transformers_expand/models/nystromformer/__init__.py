@@ -23,7 +23,7 @@ except OptionalDependencyNotAvailable:
 else:
     _import_structure["modeling_nystromformer"] = [
         "NystromformerForTokenClassificationWithBiaffine",
-            "NystromformerForTokenClassificationWithGlobalPointer",
+        "NystromformerForTokenClassificationWithGlobalPointer",
     ]
 
 if TYPE_CHECKING:

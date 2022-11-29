@@ -9,7 +9,6 @@ from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
 
 from transformers.utils import (
     add_code_sample_docstrings,
@@ -91,7 +90,7 @@ class LukeForTokenClassificationWithBiaffine(LukePreTrainedModel):
             classifier_dropout = (
                 config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
             )
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = torch.nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -132,10 +131,8 @@ class LukeForTokenClassificationWithBiaffine(LukePreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, LukeTokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
-            Labels for computing the multiple choice classification loss. Indices should be in `[0, ...,
-            num_choices-1]` where `num_choices` is the size of the second dimension of the input tensors. (See
-            `input_ids` above)
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -202,7 +199,7 @@ class LukeForTokenClassificationWithGlobalPointer(LukePreTrainedModel):
         self.num_labels = config.num_labels
 
         self.luke = LukeModel(config, add_pooling_layer=False)
-        self.dropout = nn.Dropout(
+        self.dropout = torch.nn.Dropout(
             config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
         )
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
@@ -262,10 +259,8 @@ class LukeForTokenClassificationWithGlobalPointer(LukePreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, LukeTokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
-            Labels for computing the multiple choice classification loss. Indices should be in `[0, ...,
-            num_choices-1]` where `num_choices` is the size of the second dimension of the input tensors. (See
-            `input_ids` above)
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 

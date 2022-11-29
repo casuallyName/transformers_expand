@@ -74,14 +74,15 @@ class ClueNer(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         urls_to_download = {
             "train": f"{_URL}{_TRAINING_FILE}",
-            'validation':f"{_URL}{_VALIDATION_FILE}",
+            'validation': f"{_URL}{_VALIDATION_FILE}",
             "test": f"{_URL}{_TEST_FILE}",
         }
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
             datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION,gen_kwargs={"filepath": downloaded_files["validation"]}),
+            datasets.SplitGenerator(name=datasets.Split.VALIDATION,
+                                    gen_kwargs={"filepath": downloaded_files["validation"]}),
             datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
         ]
 

@@ -14,7 +14,7 @@ from ..xlm.modeling_xlm import (
     # XLMForSequenceClassification,
     XLMForTokenClassificationWithBiaffine,
     XLMForTokenClassificationWithGlobalPointer,
-    XLMModel,
+    # XLMModel,
     # XLMWithLMHeadModel,
     # get_masks,
 )

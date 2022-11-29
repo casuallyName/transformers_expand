@@ -9,17 +9,17 @@ from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
 
 from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutputWithPastAndCrossAttentions,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, logging
+from transformers.utils import add_code_sample_docstrings, add_start_docstrings, add_start_docstrings_to_model_forward, \
+    logging
 
 from transformers.models.nystromformer.modeling_nystromformer import (
     _TOKENIZER_FOR_DOC,
@@ -30,7 +30,6 @@ from transformers.models.nystromformer.modeling_nystromformer import (
     NystromformerModel,
     NystromformerPreTrainedModel,
 )
-
 
 from ...nn import (
     GlobalPointer,
@@ -90,7 +89,7 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.hidden_dropout_prob)
+            self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -113,22 +112,22 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
         expected_loss=0.01,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.LongTensor] = None,
-        attention_mask: Optional[torch.FloatTensor] = None,
-        token_type_ids: Optional[torch.LongTensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        head_mask: Optional[torch.FloatTensor] = None,
-        inputs_embeds: Optional[torch.FloatTensor] = None,
-        labels: Optional[torch.LongTensor] = None,
+            self,
+            input_ids: Optional[torch.LongTensor] = None,
+            attention_mask: Optional[torch.FloatTensor] = None,
+            token_type_ids: Optional[torch.LongTensor] = None,
+            position_ids: Optional[torch.LongTensor] = None,
+            head_mask: Optional[torch.FloatTensor] = None,
+            inputs_embeds: Optional[torch.FloatTensor] = None,
+            labels: Optional[torch.LongTensor] = None,
             sequence_mask: Optional[torch.Tensor] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -174,8 +173,6 @@ class NystromformerForTokenClassificationWithBiaffine(NystromformerPreTrainedMod
         )
 
 
-
-
 @add_start_docstrings(
     """
     Nyströmformer Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
@@ -189,7 +186,7 @@ class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrain
         self.num_labels = config.num_labels
 
         self.nystromformer = NystromformerModel(config)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -218,7 +215,6 @@ class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrain
                 config.hidden_size
             )
 
-
         # Initialize weights and apply final processing
         self.post_init()
 
@@ -230,20 +226,20 @@ class NystromformerForTokenClassificationWithGlobalPointer(NystromformerPreTrain
         config_class=_CONFIG_FOR_DOC,
     )
     def forward(
-        self,
-        input_ids: Optional[torch.LongTensor] = None,
-        attention_mask: Optional[torch.FloatTensor] = None,
-        token_type_ids: Optional[torch.LongTensor] = None,
-        position_ids: Optional[torch.LongTensor] = None,
-        head_mask: Optional[torch.FloatTensor] = None,
-        inputs_embeds: Optional[torch.FloatTensor] = None,
-        labels: Optional[torch.LongTensor] = None,
-        output_attentions: Optional[bool] = None,
-        output_hidden_states: Optional[bool] = None,
-        return_dict: Optional[bool] = None,
+            self,
+            input_ids: Optional[torch.LongTensor] = None,
+            attention_mask: Optional[torch.FloatTensor] = None,
+            token_type_ids: Optional[torch.LongTensor] = None,
+            position_ids: Optional[torch.LongTensor] = None,
+            head_mask: Optional[torch.FloatTensor] = None,
+            inputs_embeds: Optional[torch.FloatTensor] = None,
+            labels: Optional[torch.LongTensor] = None,
+            output_attentions: Optional[bool] = None,
+            output_hidden_states: Optional[bool] = None,
+            return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict

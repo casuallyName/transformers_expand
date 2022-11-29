@@ -5,19 +5,16 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-
-
 from typing import Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
 
 from transformers.modeling_outputs import (
-    BaseModelOutput,
-    MaskedLMOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutput,
+    # MaskedLMOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 
@@ -31,7 +28,6 @@ from transformers.models.deberta.modeling_deberta import (
     _CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
     _CONFIG_FOR_DOC,
     _TOKEN_CLASS_EXPECTED_LOSS,
-
     DebertaPreTrainedModel,
     DebertaModel
 )
@@ -96,7 +92,7 @@ class DebertaForTokenClassificationWithBiaffine(DebertaPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.hidden_dropout_prob)
+            self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -132,8 +128,8 @@ class DebertaForTokenClassificationWithBiaffine(DebertaPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -193,7 +189,7 @@ class DebertaForTokenClassificationWithGlobalPointer(DebertaPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.deberta = DebertaModel(config)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -247,7 +243,7 @@ class DebertaForTokenClassificationWithGlobalPointer(DebertaPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict

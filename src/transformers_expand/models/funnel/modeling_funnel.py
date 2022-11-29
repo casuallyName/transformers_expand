@@ -6,25 +6,19 @@
 # @Software : Python 3.7
 # @About    :
 
-import os
-from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
 
-import numpy as np
 import torch
-from torch import nn
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
-from transformers.activations import ACT2FN
 from transformers.modeling_outputs import (
-    BaseModelOutput,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutput,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
+
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
@@ -100,7 +94,7 @@ class FunnelForTokenClassificationWithBiaffine(FunnelPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.hidden_dropout)
+            self.dropout = torch.nn.Dropout(config.hidden_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -135,8 +129,8 @@ class FunnelForTokenClassificationWithBiaffine(FunnelPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -193,7 +187,7 @@ class FunnelForTokenClassificationWithGlobalPointer(FunnelPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.funnel = FunnelModel(config)
-        self.dropout = nn.Dropout(config.hidden_dropout)
+        self.dropout = torch.nn.Dropout(config.hidden_dropout)
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
                 f"Parameter conflict, user set inner_dim is {inner_dim}, but config.inner_dim is {config.inner_dim}. "
@@ -243,7 +237,7 @@ class FunnelForTokenClassificationWithGlobalPointer(FunnelPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict

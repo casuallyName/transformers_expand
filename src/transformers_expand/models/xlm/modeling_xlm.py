@@ -9,23 +9,20 @@
 from typing import Dict, Optional, Tuple, Union
 
 import torch
-from torch import nn
 
 from transformers.modeling_outputs import (
-    BaseModelOutput,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutput,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 from transformers.utils import (
-    ModelOutput,
     add_code_sample_docstrings,
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
     logging,
-    replace_return_docstrings,
 )
 from transformers.models.xlm.modeling_xlm import (
     XLM_START_DOCSTRING,
@@ -96,7 +93,7 @@ class XLMForTokenClassificationWithBiaffine(XLMPreTrainedModel):
                 torch.nn.Linear(in_features=2 * self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
         else:
-            self.dropout = nn.Dropout(config.dropout)
+            self.dropout = torch.nn.Dropout(config.dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -136,8 +133,8 @@ class XLMForTokenClassificationWithBiaffine(XLMPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -199,7 +196,7 @@ class XLMForTokenClassificationWithGlobalPointer(XLMPreTrainedModel):
         self.num_labels = config.num_labels
 
         self.transformer = XLMModel(config)
-        self.dropout = nn.Dropout(config.dropout)
+        self.dropout = torch.nn.Dropout(config.dropout)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -257,7 +254,7 @@ class XLMForTokenClassificationWithGlobalPointer(XLMPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple, TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict

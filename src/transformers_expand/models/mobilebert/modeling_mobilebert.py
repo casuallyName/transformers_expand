@@ -8,16 +8,15 @@
 from typing import Optional, Tuple, Union
 
 import torch
-from torch import nn
 
 from transformers.modeling_outputs import (
-    BaseModelOutput,
-    BaseModelOutputWithPooling,
-    MaskedLMOutput,
-    MultipleChoiceModelOutput,
-    NextSentencePredictorOutput,
-    QuestionAnsweringModelOutput,
-    SequenceClassifierOutput,
+    # BaseModelOutput,
+    # BaseModelOutputWithPooling,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # NextSentencePredictorOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
     TokenClassifierOutput,
 )
 
@@ -104,7 +103,7 @@ class MobileBertForTokenClassificationWithBiaffine(MobileBertPreTrainedModel):
             classifier_dropout = (
                 config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
             )
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = torch.nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -141,8 +140,8 @@ class MobileBertForTokenClassificationWithBiaffine(MobileBertPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
-            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -207,7 +206,7 @@ class MobileBertForTokenClassificationWithGlobalPointer(MobileBertPreTrainedMode
         classifier_dropout = (
             config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
         )
-        self.dropout = nn.Dropout(classifier_dropout)
+        self.dropout = torch.nn.Dropout(classifier_dropout)
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
                 f"Parameter conflict, user set inner_dim is {inner_dim}, but config.inner_dim is {config.inner_dim}. "
@@ -261,7 +260,7 @@ class MobileBertForTokenClassificationWithGlobalPointer(MobileBertPreTrainedMode
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict

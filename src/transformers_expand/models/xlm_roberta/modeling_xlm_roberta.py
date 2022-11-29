@@ -10,7 +10,6 @@ from transformers.utils import add_start_docstrings, logging
 from ..roberta.modeling_roberta import (
     RobertaForTokenClassificationWithBiaffine,
     RobertaForTokenClassificationWithGlobalPointer,
-
 )
 from transformers.models.xlm_roberta.modeling_xlm_roberta import (
     XLM_ROBERTA_START_DOCSTRING,
