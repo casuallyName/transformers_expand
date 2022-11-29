@@ -155,7 +155,7 @@ if __name__ == '__main__':
         'markuplm',  # 不合适
         'megatron-bert',  # 不合适
         'fnet',  # 不支持attention_mask
-        'xlm-roberta-xl',  # 太大跳过测试
+        # 'xlm-roberta-xl',  # 太大跳过测试
     ]
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
