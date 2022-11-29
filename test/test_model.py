@@ -99,9 +99,6 @@ def check_model(model_list, end, auto_name, forward_func, pass_list=None):
                                                                end=end,
                                                                auto_name=auto_name)
         if model_ckp_list is None:
-            # res[model_name] = f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m'
-            # print(f'\t{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
-            # res.append(f'{model_name:<20}: \033[33m Θ 未定义模型或导入失败\033[30m')
             res.append(f'{model_name:<20}: \033[31m ✘ 错误 (未定义模型或导入失败) \033[30m')
             print(f'Test {model_obj_name}{end} End')
         else:
@@ -114,8 +111,10 @@ def check_model(model_list, end, auto_name, forward_func, pass_list=None):
                     )
                     model_1 = model_1.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
                     print(model_1.config._name_or_path)
-                    if model_1.config._name_or_path == 'gpt2':
+                    if 'gpt2' in model_1.config._name_or_path:
                         tokenizer.pad_token = tokenizer.eos_token
+                    # if 'deberta' in model_1.config._name_or_path:
+                    #     input_text = ['测试', '句子']
 
 
 
