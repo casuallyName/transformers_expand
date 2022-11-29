@@ -50,7 +50,7 @@ def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
         return None, None, None
 
 
-def forward_func_for_biaffine(input_text,model, tokenizer,max_length = 5):
+def forward_func_for_biaffine(input_text, model, tokenizer, max_length=5):
     inputs = tokenizer(input_text,
                        max_length=max_length,
                        truncation=True,
@@ -73,7 +73,7 @@ def forward_func_for_biaffine(input_text,model, tokenizer,max_length = 5):
     return loss
 
 
-def forward_func_for_global_pointer(input_text,model, tokenizer,max_length = 5):
+def forward_func_for_global_pointer(input_text, model, tokenizer, max_length=5):
     inputs = tokenizer(input_text,
                        max_length=max_length,
                        truncation=True,
@@ -118,12 +118,10 @@ def check_model(model_list, end, auto_name, forward_func, pass_list=None):
                     # if 'deberta' in model_1.config._name_or_path:
                     #     input_text = ['测试', '句子']
 
-
-
-                    loss_1 = forward_func(input_text,model_1, tokenizer)
+                    loss_1 = forward_func(input_text, model_1, tokenizer)
                     del model_1
                     model_2 = model_2.from_pretrained(pretrained_model_name_or_path=pretrained_model_name_or_path)
-                    loss_2 = forward_func(input_text,model_2, tokenizer)
+                    loss_2 = forward_func(input_text, model_2, tokenizer)
                     del model_2
                     # print(f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m')
                     # res[model_name] = f'\t{model_name:<20}: \033[32m ✔ 通过\033[30m'
@@ -149,13 +147,13 @@ if __name__ == '__main__':
 
     result = {}
     pass_list = [
+        'markuplm',  # 不合适
+        'megatron-bert',  # 不合适
         'layoutlm',  # 不合适
         'layoutlmv2',  # 不合适
         'layoutlmv3',  # 不合适
-        'markuplm',  # 不合适
-        'megatron-bert',  # 不合适
+        'lilt'
         'fnet',  # 不支持attention_mask
-        # 'xlm-roberta-xl',  # 太大跳过测试
     ]
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
