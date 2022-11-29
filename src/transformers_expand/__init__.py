@@ -47,9 +47,9 @@ _import_structure = {
     "models.mobilebert": [],
     "models.mpnet": [],
     "models.nezha": [],
-    "models.nystromformer":[],
-    "models.qdqbert":[],
-    "models.rembert":[],
+    "models.nystromformer": [],
+    "models.qdqbert": [],
+    "models.rembert": [],
     # TODO
     "models.roberta": [],
     "models.roformer": [],
@@ -259,7 +259,12 @@ else:
             "QDQBertForTokenClassificationWithBiaffine",
         ]
     )
-    # TODO
+    _import_structure["models.rembert"].extend(
+        [
+            "RemBertForTokenClassificationWithGlobalPointer",
+            "RemBertForTokenClassificationWithBiaffine",
+        ]
+    )
     _import_structure["models.roberta"].extend(
         [
             "RobertaForTokenClassificationWithBiaffine",
@@ -450,7 +455,10 @@ if TYPE_CHECKING:
             QDQBertForTokenClassificationWithBiaffine,
             QDQBertForTokenClassificationWithGlobalPointer,
         )
-        # TODO
+        from .models.rembert import (
+            RemBertForTokenClassificationWithBiaffine,
+            RemBertForTokenClassificationWithGlobalPointer,
+        )
         from .models.roberta import (
             RobertaForTokenClassificationWithBiaffine,
             RobertaForTokenClassificationWithGlobalPointer,
