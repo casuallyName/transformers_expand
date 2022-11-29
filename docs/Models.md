@@ -2,14 +2,6 @@
 
 ## `transformers_expand.AutoModelForTokenClassificationWithGlobalPointer`
 
-<details>
-<summary>目前支持的Encoder模型</summary>
-<br>
-BERT<br>
-ELECTRA<br>
-ERNIE<br>
-</details>
-
 ### `.from_config`
 
 #### Parameters
@@ -45,14 +37,6 @@ model = AutoModelForTokenClassificationWithGlobalPointer.from_pretrained("bert-b
 ```
 
 ## `transformers_expand.AutoModelForTokenClassificationWithBiaffine`
-
-<details>
-<summary>目前支持的Encoder模型</summary>
-<br>
-BERT<br>
-ELECTRA<br>
-ERNIE<br>
-</details>
 
 ### `.from_config`
 
