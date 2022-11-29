@@ -36,7 +36,7 @@ def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
             model_ckp_list = getattr(getattr(getattr(getattr(transformers, 'models'), name), modeling_name),
                                      model_name.upper() + '_PRETRAINED_MODEL_ARCHIVE_LIST')
             if model_name == 'layoutlm':
-                model_ckp_list = ['microsoft/'+i for i in model_ckp_list]
+                model_ckp_list = ['microsoft/' + i for i in model_ckp_list]
             model_1 = getattr(transformers_expand, model_obj_name + end)
             model_2 = getattr(transformers_expand, auto_name)
             return model_ckp_list, model_1, model_2
@@ -158,16 +158,16 @@ if __name__ == '__main__':
     from transformers.models.auto.modeling_auto import MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES
 
     result = {}
-    pass_list = ['xlm-roberta-xl',  # 太大跳过测试
-                 'gpt2',# 太大跳过测试
-                 'layoutlm', # 不合适
-                 'layoutlmv2',# 不合适
-                 'layoutlmv3',# 不合适
-                 'markuplm',# 不合适
-                 'megatron-bert',# 不合适
-                 'fnet',  # 不支持attention_mask
-
-                 ]
+    pass_list = [
+        # 'gpt2',# 太大跳过测试
+        'layoutlm',  # 不合适
+        'layoutlmv2',  # 不合适
+        'layoutlmv3',  # 不合适
+        'markuplm',  # 不合适
+        'megatron-bert',  # 不合适
+        'fnet',  # 不支持attention_mask
+        'xlm-roberta-xl',  # 太大跳过测试
+    ]
     result['Biaffine'] = check_model(model_list=MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES.items(),
                                      end='WithBiaffine',
                                      auto_name='AutoModelForTokenClassificationWithBiaffine',
