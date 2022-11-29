@@ -11,7 +11,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def load_adversarial(name,trainer):
+
+def load_adversarial(name, trainer):
     adversarial_module = importlib.import_module("transformers_expand.nn.adversarial")
     if name is None or name == 'none':
         return None
@@ -19,7 +20,6 @@ def load_adversarial(name,trainer):
         return getattr(adversarial_module, name)(trainer)
     else:
         raise ImportError(f"cannot import name '{name}' from 'transformers_expand.nn.adversarial' ")
-
 
 # def load_adversarial(adversarial_name,trainer):
 #     return

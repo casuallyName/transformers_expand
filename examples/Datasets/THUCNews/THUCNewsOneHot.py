@@ -24,17 +24,17 @@ _URLS = {
     "test": "test.csv",
 }
 _LABELS = [
-        "金融",
-        "地产",
-        "股票",
-        "教育",
-        "科学",
-        "社会",
-        "政治",
-        "体育",
-        "游戏",
-        "娱乐",
-    ]
+    "金融",
+    "地产",
+    "股票",
+    "教育",
+    "科学",
+    "社会",
+    "政治",
+    "体育",
+    "游戏",
+    "娱乐",
+]
 
 
 class THUCNews_SentimentDatasetConfig(datasets.BuilderConfig):

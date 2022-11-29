@@ -1,13 +1,29 @@
+# -*- coding: utf-8 -*-
+# @Time     : 2022/11/29 12:19
+# @File     : modeling_electra.py
+# @Author   : Zhou Hang
+# @Email    : zhouhang@idataway.com
+# @Software : Python 3.7
+# @About    :
 from typing import List, Optional, Tuple, Union
 import torch.utils.checkpoint
-from torch import nn
-from transformers.modeling_outputs import TokenClassifierOutput
+
+from transformers.modeling_outputs import (
+    # BaseModelOutput,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
+    TokenClassifierOutput,
+)
+
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
     logging,
 )
+
 from transformers.models.electra.modeling_electra import (
     _CONFIG_FOR_DOC,
     _TOKENIZER_FOR_DOC,
@@ -27,9 +43,6 @@ from ...nn import (
 logger = logging.get_logger(__name__)
 
 _CHECKPOINT_FOR_TOKEN_CLASSIFICATION = "hfl/chinese-electra-180g-base-discriminator"
-_TOKEN_CLASS_EXPECTED_OUTPUT = (
-    "{'entity':'小明', 'type':'PER', 'start':3, 'end':4}"
-)
 _TOKEN_CLASS_EXPECTED_LOSS = 0.01
 
 
@@ -84,7 +97,7 @@ class ElectraForTokenClassificationWithBiaffine(ElectraPreTrainedModel):
             classifier_dropout = (
                 config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
             )
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = torch.nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -103,7 +116,7 @@ class ElectraForTokenClassificationWithBiaffine(ElectraPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(
@@ -120,6 +133,10 @@ class ElectraForTokenClassificationWithBiaffine(ElectraPreTrainedModel):
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
+        r"""
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
+        """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
         outputs = self.electra(
             input_ids,
@@ -151,7 +168,7 @@ class ElectraForTokenClassificationWithBiaffine(ElectraPreTrainedModel):
             loss = loss_fct(span_logits=logits, span_label=labels, sequence_mask=sequence_mask)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
@@ -179,7 +196,7 @@ class ElectraForTokenClassificationWithGlobalPointer(ElectraPreTrainedModel):
         classifier_dropout = (
             config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
         )
-        self.dropout = nn.Dropout(classifier_dropout)
+        self.dropout = torch.nn.Dropout(classifier_dropout)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -217,7 +234,7 @@ class ElectraForTokenClassificationWithGlobalPointer(ElectraPreTrainedModel):
         checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
         expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
     )
     def forward(
@@ -234,7 +251,7 @@ class ElectraForTokenClassificationWithGlobalPointer(ElectraPreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, biaffine_input_size)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
@@ -262,7 +279,7 @@ class ElectraForTokenClassificationWithGlobalPointer(ElectraPreTrainedModel):
             loss = loss_fct(logits, labels)
 
         if not return_dict:
-            output = (logits,) + outputs[2:]
+            output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(

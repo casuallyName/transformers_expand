@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# @Time     : 2022/11/29 12:14
+# @File     : __init__.py
+# @Author   : Zhou Hang
+# @Email    : zhouhang@idataway.com
+# @Software : Python 3.7
+# @About    :
 from typing import TYPE_CHECKING
 
 from transformers.utils import (
@@ -15,8 +22,8 @@ except OptionalDependencyNotAvailable:
     pass
 else:
     _import_structure["modeling_bert"] = [
+        "BertForTokenClassificationWithBiaffine",
         "BertForTokenClassificationWithGlobalPointer",
-        "BertForTokenClassificationWithBiaffine"
     ]
 
 if TYPE_CHECKING:
@@ -28,8 +35,8 @@ if TYPE_CHECKING:
         pass
     else:
         from .modeling_bert import (
-            BertForTokenClassificationWithGlobalPointer,
             BertForTokenClassificationWithBiaffine,
+            BertForTokenClassificationWithGlobalPointer,
         )
 else:
     import sys

@@ -5,20 +5,20 @@
 # @Email    : zhouhang@idataway.com
 # @Software : Python 3.7
 # @About    :
-
 from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
-from torch import nn
 
-from transformers.modeling_outputs import TokenClassifierOutput
-# from transformers.utils import (
-#     add_start_docstrings,
-#     add_start_docstrings_to_model_forward,
-#     logging,
-#     replace_return_docstrings,
-# )
+from transformers.modeling_outputs import (
+    # BaseModelOutput,
+    # MaskedLMOutput,
+    # MultipleChoiceModelOutput,
+    # QuestionAnsweringModelOutput,
+    # SequenceClassifierOutput,
+    TokenClassifierOutput,
+)
+
 from transformers.utils import (
     add_code_sample_docstrings,
     add_start_docstrings,
@@ -31,7 +31,9 @@ from transformers.models.ernie.modeling_ernie import (
     ErnieModel,
     ERNIE_START_DOCSTRING,
     ERNIE_INPUTS_DOCSTRING,
-    _TOKENIZER_FOR_DOC, _CONFIG_FOR_DOC
+    _TOKENIZER_FOR_DOC,
+    _CONFIG_FOR_DOC,
+    _CHECKPOINT_FOR_DOC
 )
 
 from ...nn import (
@@ -44,17 +46,11 @@ from ...nn import (
 
 logger = logging.get_logger(__name__)
 
-_CHECKPOINT_FOR_TOKEN_CLASSIFICATION = "hfl/chinese-electra-180g-base-discriminator"
-_TOKEN_CLASS_EXPECTED_OUTPUT = (
-    "{'entity':'小明', 'type':'PER', 'start':3, 'end':4}"
-)
-_TOKEN_CLASS_EXPECTED_LOSS = 0.01
-
 
 @add_start_docstrings(
     """
-    Ernie Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Ernie Model with a token classification head on top (a biaffine layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ERNIE_START_DOCSTRING,
 )
@@ -103,7 +99,7 @@ class ErnieForTokenClassificationWithBiaffine(ErniePreTrainedModel):
             classifier_dropout = (
                 config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
             )
-            self.dropout = nn.Dropout(classifier_dropout)
+            self.dropout = torch.nn.Dropout(classifier_dropout)
             self.start_layer = torch.nn.Sequential(
                 torch.nn.Linear(in_features=self.config.hidden_size, out_features=self.biaffine_input_size),
                 torch.nn.ReLU())
@@ -119,11 +115,11 @@ class ErnieForTokenClassificationWithBiaffine(ErniePreTrainedModel):
     @add_start_docstrings_to_model_forward(ERNIE_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
-        expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        expected_loss=0.01,
     )
     def forward(
             self,
@@ -140,6 +136,10 @@ class ErnieForTokenClassificationWithBiaffine(ErniePreTrainedModel):
             output_hidden_states: Optional[bool] = None,
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
+        r"""
+        labels (`torch.LongTensor` of shape `(batch_size, sequence_length, sequence_length)`, *optional*):
+            Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels]`.
+        """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
         outputs = self.ernie(
             input_ids,
@@ -186,8 +186,8 @@ class ErnieForTokenClassificationWithBiaffine(ErniePreTrainedModel):
 
 @add_start_docstrings(
     """
-    Ernie Model with a token classification head on top (a global pointer layer on top of the hidden-states output) e.g. for
-    Named-Entity-Recognition (NER) tasks.
+    Ernie Model with a token classification head on top (a global pointer layer on top of the hidden-states output) 
+    e.g. for Named-Entity-Recognition (NER) tasks.
     """,
     ERNIE_START_DOCSTRING,
 )
@@ -202,7 +202,7 @@ class ErnieForTokenClassificationWithGlobalPointer(ErniePreTrainedModel):
         classifier_dropout = (
             config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
         )
-        self.dropout = nn.Dropout(classifier_dropout)
+        self.dropout = torch.nn.Dropout(classifier_dropout)
 
         if inner_dim is not None and hasattr(config, 'inner_dim') and config.inner_dim != inner_dim:
             logger.warning(
@@ -237,11 +237,11 @@ class ErnieForTokenClassificationWithGlobalPointer(ErniePreTrainedModel):
     @add_start_docstrings_to_model_forward(ERNIE_INPUTS_DOCSTRING.format("batch_size, sequence_length"))
     @add_code_sample_docstrings(
         processor_class=_TOKENIZER_FOR_DOC,
-        checkpoint=_CHECKPOINT_FOR_TOKEN_CLASSIFICATION,
+        checkpoint=_CHECKPOINT_FOR_DOC,
         output_type=TokenClassifierOutput,
         config_class=_CONFIG_FOR_DOC,
-        expected_output=_TOKEN_CLASS_EXPECTED_OUTPUT,
-        expected_loss=_TOKEN_CLASS_EXPECTED_LOSS,
+        expected_output="{'entity':'小明', 'type':'PER', 'start':3, 'end':4}",
+        expected_loss=0.01,
     )
     def forward(
             self,
@@ -258,7 +258,7 @@ class ErnieForTokenClassificationWithGlobalPointer(ErniePreTrainedModel):
             return_dict: Optional[bool] = None,
     ) -> Union[Tuple[torch.Tensor], TokenClassifierOutput]:
         r"""
-        labels (`torch.LongTensor` of shape `(batch_size, biaffine_input_size)`, *optional*):
+        labels (`torch.LongTensor` of shape `(batch_size, config.num_labels, sequence_length, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict

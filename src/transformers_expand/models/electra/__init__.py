@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# @Time     : 2022/11/29 12:19
+# @File     : __init__.py
+# @Author   : Zhou Hang
+# @Email    : zhouhang@idataway.com
+# @Software : Python 3.7
+# @About    :
 from typing import TYPE_CHECKING
 
 from transformers.utils import (

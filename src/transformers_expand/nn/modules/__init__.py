@@ -3,4 +3,3 @@ from .loss import (
     MultiLabelCategoricalForNerCrossEntropyLoss,
     SpanLoss
 )
-

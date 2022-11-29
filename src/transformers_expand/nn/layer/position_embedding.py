@@ -9,11 +9,12 @@ class SinusoidalPositionEmbedding(Module):
     Reference:
         https://github.com/bojone/bert4keras/blob/70a7eb9ace18b9f4806b6386e5183f32d024bc37/bert4keras/layers.py#L849
     """
+
     def __init__(
-        self,
-        output_dim,
-        merge_mode='add',
-        custom_position_ids=False
+            self,
+            output_dim,
+            merge_mode='add',
+            custom_position_ids=False
     ):
         super(SinusoidalPositionEmbedding, self).__init__()
         self.output_dim = output_dim
