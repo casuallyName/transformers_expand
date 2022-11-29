@@ -37,8 +37,11 @@ def get_checkpoint_name(model_name, model_obj_name, end, auto_name):
                                      model_name.upper() + '_PRETRAINED_MODEL_ARCHIVE_LIST')
             if model_name == 'layoutlm':
                 model_ckp_list = ['microsoft/' + i for i in model_ckp_list]
+            if model_name == 'xlm_roberta_xl':
+                model_ckp_list = ['hf-internal-testing/tiny-random-XLMRobertaXLForTokenClassification']
             model_1 = getattr(transformers_expand, model_obj_name + end)
             model_2 = getattr(transformers_expand, auto_name)
+
             return model_ckp_list, model_1, model_2
         except:
             traceback.print_exc()
@@ -146,7 +149,6 @@ if __name__ == '__main__':
 
     result = {}
     pass_list = [
-        # 'gpt2',# 太大跳过测试
         'layoutlm',  # 不合适
         'layoutlmv2',  # 不合适
         'layoutlmv3',  # 不合适
