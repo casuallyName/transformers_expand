@@ -9,6 +9,9 @@ import torch
 
 
 class _Adversarial(object):
+    """
+    Base class for all Adversarial
+    """
     def __init__(self, trainer):
         self.trainer = trainer
         self.args = None if trainer is None else trainer.args
@@ -36,6 +39,10 @@ class _Adversarial(object):
 
 
 class FGSM(_Adversarial):
+    """
+    FGSM 对抗训练方案
+
+    """
     def __init__(self, trainer):
         super(FGSM, self).__init__(trainer=trainer)
         self.emb_name = self._get_args('FGSM_emb_name', 'embeddings')
@@ -70,6 +77,10 @@ class FGSM(_Adversarial):
 
 
 class FGM(_Adversarial):
+    """
+    FGM 对抗训练方案
+
+    """
     def __init__(self, trainer):
         super(FGM, self).__init__(trainer=trainer)
         self.emb_name = self._get_args('FGM_emb_name', 'embeddings')
@@ -104,6 +115,10 @@ class FGM(_Adversarial):
 
 
 class PGD(_Adversarial):
+    """
+    PGD 对抗训练方案
+
+    """
     def __init__(self, trainer):
         super(PGD, self).__init__(trainer=trainer)
         self.emb_name = self._get_args('PGD_emb_name', 'embeddings')
@@ -170,6 +185,10 @@ class PGD(_Adversarial):
 
 
 class FreeAT(_Adversarial):
+    """
+    FreeAT 对抗训练方案
+
+    """
     def __init__(self, trainer):
         super(FreeAT, self).__init__(trainer=trainer)
         self.epsilon = self._get_args('FreeAT_epsilon', 1.)
