@@ -46,13 +46,13 @@ loss_fnt: torch.nn.Module = None)`
 * **loss_fnt** (torch.nn.Module, *optional*) — Loss计算方法
 
 
-## Function
+## 具体变更
 
 继承自`trasnformers.Trainer`，但重写了以下方法
 
 * **\_\_init\_\_**  —  重新`transformers.Trainer`的`__init__`方法，用于适配以下新功能：
   1. 新增一个可选参数`loss_fnt`，用来指定Trainer内部损失部分的计算方法，默认为`None`，使用模型自带的损失计算方法
   2. 新增训练阶段的对抗学习功能，具体由[`trainsfomers_expand.TrainingArguments`](https://github.com/casuallyName/transformers_expand/blob/master/docs/TrainingArguments.md)指定。
-     * 目前支持对抗训练方案：`FGM`、`PGD`
+     * 目前支持对抗训练方案：`FGSM`、`FGM`、`PGD`、`FreeAT`
 
 * **compute_loss** — 训练时每个batch的loss计算方式。 在初始化Trainer时新增`loss_fnt`参数，用来更换其他损失函数。**损失函数应定义为继承自`torch.nn.Module`的模型**。
