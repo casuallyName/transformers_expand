@@ -173,7 +173,6 @@ class Trainer(transformers.Trainer):
             if adversarial_name is None or adversarial_name == 'none':
                 self.adversarial = None
             else:
-
                 self.adversarial = load_adversarial(name=adversarial_name, trainer=self)
                 logger.info(f"Init adversarial {self.adversarial}")
         else:
@@ -239,35 +238,9 @@ class Trainer(transformers.Trainer):
         Return:
             `torch.Tensor`: The tensor with training loss on this batch.
         """
-        model.train()
-        inputs = self._prepare_inputs(inputs)
-
-        if is_sagemaker_mp_enabled():
-            loss_mb = smp_forward_backward(model, inputs, self.args.gradient_accumulation_steps)
-            return loss_mb.reduce_mean().detach().to(self.args.device)
-
-        with self.compute_loss_context_manager():
-            loss = self.compute_loss(model, inputs)
-
-        if self.args.n_gpu > 1:
-            loss = loss.mean()  # mean() to average on multi-gpu parallel training
-
-        if self.args.gradient_accumulation_steps > 1 and not self.deepspeed:
-            # deepspeed handles loss scaling by gradient_accumulation_steps in its `backward`
-            loss = loss / self.args.gradient_accumulation_steps
-
-        if self.do_grad_scaling:
-            self.scaler.scale(loss).backward()
-        elif self.use_apex:
-            with amp.scale_loss(loss, self.optimizer) as scaled_loss:
-                scaled_loss.backward()
-        elif self.deepspeed:
-            # loss gets scaled under gradient_accumulation_steps in deepspeed
-            loss = self.deepspeed.backward(loss)
-        else:
-            loss.backward()
+        loss = super().training_step(model,inputs)
 
         if self.adversarial:
             self.adversarial(inputs)
 
-        return loss.detach()
+        return loss
